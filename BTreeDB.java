@@ -26,7 +26,8 @@ public class BTreeDB {
 				//first, make sure input has more than 1 value
 				else if (inputArr[0].equals("insert") && inputArr.length > 1) {
 					//if first value is an integer AND there is no string after
-					if (isInteger(inputArr[1]) && inputArr.length == 2) {
+					//FOR NOW, ASSUME USER ALWAYS INPUTS CORRECT INPUT
+					if (inputArr.length == 2) {
 						insert(inputArr[1], "");
 						System.out.println("Inserted");
 					}
@@ -52,21 +53,5 @@ public class BTreeDB {
 
 		String[] split = input.split(" ");
 		return split;
-	}
-
-	public static boolean isInteger(Object object) {
-		
-		if (object instanceof Integer)
-			return true;
-		// else {
-		// 	String string = object.toString();
-
-		// 	try {
-		// 		Integer.parseInt(string);
-		// 	} catch (Exception e) {
-		// 		return false;
-		// 	}
-		// }
-		return false;
 	}
 }
