@@ -7,7 +7,9 @@ public class BTreeDB {
 
 		try {
 			RandomAccessFile file = new RandomAccessFile(args[0], "rwd");
-			RandomAccessFile file2 = new RandomAccessFile(args[1], "rwd");
+			//RandomAccessFile file2 = new RandomAccessFile(args[1], "rwd");
+			ValuesManager vm = new ValuesManager(args[1]);
+
 
 			Scanner sc = new Scanner(System.in);
 			while (sc.hasNext()) {
@@ -21,21 +23,16 @@ public class BTreeDB {
 				//if input is "exit", close program
 				if (command.equals("exit")) {
 					file.close();
-					file2.close();
+					//file2.close();
 					return;
 				}
-
-				long key = rd.nextLong();
-				String value = rd.nextLine();
-
-
 				
 				//else if input is "insert", check if it is valid
 				//first, make sure input has more than 1 value
 				if (command.equals("insert")) {
 
-					//if first value is an integer AND there is no string after
-					//FOR NOW, ASSUME USER ALWAYS INPUTS CORRECT INPUT
+					long key = rd.nextLong();
+					String value = rd.nextLine();
 					
 					insert(key, value);
 
