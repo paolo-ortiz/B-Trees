@@ -7,30 +7,37 @@ public class BTreeDB {
 
 		try {
 			RandomAccessFile file = new RandomAccessFile(args[0], "rwd");
-			RandomAccessFile file2 = new RandomAccessFile(args[1], "rwd");
+			//RandomAccessFile file2 = new RandomAccessFile(args[1], "rwd");
+			ValuesManager vm = new ValuesManager(args[1]);
+
 
 			Scanner sc = new Scanner(System.in);
 			while (sc.hasNext()) {
 
 				String input = sc.nextLine(); //get input
-				String[] inputArr = splitInput(input); //split input
 
+				//for getting the inputs
+				Scanner rd = new Scanner(input);
+				String command = rd.next();
 
 				//if input is "exit", close program
-				if (inputArr[0].equals("exit")) {
+				if (command.equals("exit")) {
 					file.close();
-					file2.close();
+					//file2.close();
 					return;
 				}
+				
 				//else if input is "insert", check if it is valid
 				//first, make sure input has more than 1 value
-				else if (inputArr[0].equals("insert") && inputArr.length > 1) {
-					//if first value is an integer AND there is no string after
-					//FOR NOW, ASSUME USER ALWAYS INPUTS CORRECT INPUT
-					if (inputArr.length == 2) {
-						insert(inputArr[1], "");
-						System.out.println("Inserted");
-					}
+				if (command.equals("insert")) {
+
+					long key = rd.nextLong();
+					String value = rd.nextLine();
+					
+					insertToVal(key, value, vm);
+
+					//else if there is more than 2 elements
+
 				}
 				//else if invalid command, print "invalid command"
 				else
@@ -43,15 +50,12 @@ public class BTreeDB {
 	}	
 
 	//inserts value into tree
-	public static void insert(Object hash, String word) {
+	public static void insertToVal(long key, String word, ValuesManager vm) {
 		
-		System.out.printf("Inserted %s", word);
+		System.out.printf("Inserted %s\n", word);
+		vm.insert(key, word);
+
 	}
 
-	//splits input into array to get values
-	public static String[] splitInput(String input) {
-
-		String[] split = input.split(" ");
-		return split;
-	}
+	
 }
