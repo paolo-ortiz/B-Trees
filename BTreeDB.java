@@ -50,7 +50,7 @@ public class BTreeDB {
 	}	
 
 	//inserts value into tree
-	public static void insertToVal(long key, String word, ValuesManager vm) {
+	public static void insertToVal(long key, String word, ValuesManager vm) throws IOException {
 		
 		System.out.printf("Inserted %s\n", word);
 		vm.insert(key, word);

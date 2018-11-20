@@ -3,11 +3,11 @@ import java.io.*;
 
 public class ValuesManager {
 
+	static RandomAccessFile file2; //needs to be declared so it can be used by other methods
 
 	//Constructor
 	ValuesManager(String name) throws IOException {
 
-		
 		long numRecords;
 
 		//creates temporary file
@@ -16,24 +16,29 @@ public class ValuesManager {
 		boolean fileExists = tempFile.exists();
 
 		if (fileExists) {
-			//read number of records
-			
+			//do something
 
-			//insert values
+			//instantiate data.val RAF
+			this.file2 = new RandomAccessFile(name, "rwd");
 
-			System.out.println("FILE EXISTS");
+			System.out.println("FILE EXISTS"); //TEMP
 		}
 		else {
-			System.out.println("FILE DOES NOT EXIST");
+			System.out.println("FILE DOES NOT EXIST"); //TEMP
 			numRecords = 0;
-			RandomAccessFile file2 = new RandomAccessFile(name, "rwd");
+			
 			
 		}
 	}
 
-	public static void insert(long key, String value) {
+	/**
+	* Inserts values to data.val
+	*/
+	public static void insert(long key, String value) throws IOException {
 
-		file2.writeLong(key);
+		byte[] byteArray = value.getBytes(); //coverts string to byte array
+		file2.writeShort(byteArray.length); //writes length of byte array
+		file2.write(byteArray); //writes actual byte array
 	}
 
 }
