@@ -32,7 +32,7 @@ public class BTreeDB {
 				if (command.equals("insert")) {
 
 					long key = rd.nextLong();
-					String value = rd.nextLine();
+					String value = rd.nextLine().trim();
 					
 					insertToVal(key, value, vm);
 
