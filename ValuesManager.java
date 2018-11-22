@@ -5,11 +5,12 @@ public class ValuesManager {
 
 	static RandomAccessFile file2; //needs to be declared so it can be used by other methods
 	static long numRecords;
+	static long seekLocation;
 
 	//Constructor
 	ValuesManager(String name) throws IOException {
 
-		long i = 0; //initial read position
+		seekLocation = 0; //initial read position
 
 		//creates temporary file
 		//when data files do not exist, then it creates one
@@ -22,14 +23,14 @@ public class ValuesManager {
 			this.file2 = new RandomAccessFile(name, "rwd");
 
 			//seek values
-			file2.seek(i);
-			i += 256;
+			file2.seek(seekLocation);
+			seekLocation += 256;
 
 			//get number of records
 			numRecords = file2.readLong();
 
 			System.out.println("FILE EXISTS"); //TEMP
-			System.out.println(numRecords);
+			System.out.println(numRecords); //TEMP
 		}
 		else {
 			System.out.println("FILE DOES NOT EXIST"); //TEMP
@@ -46,6 +47,9 @@ public class ValuesManager {
 		byte[] byteArray = value.getBytes(); //coverts string to byte array
 		file2.writeShort(byteArray.length); //writes length of byte array
 		file2.write(byteArray); //writes actual byte array
+
+		seekLocation += 256;
+		file2.seek(seekLocation);
 		//closeData();
 
 	}
