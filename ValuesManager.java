@@ -22,20 +22,22 @@ public class ValuesManager {
 			//instantiate data.val RAF
 			this.file2 = new RandomAccessFile(name, "rwd");
 
-			//seek values
+			//seek num of records
 			file2.seek(seekLocation);
-			seekLocation += 256;
 
 			//get number of records
 			numRecords = file2.readLong();
 
 			System.out.println("FILE EXISTS"); //TEMP
-			System.out.println(numRecords); //TEMP
+			
 		}
 		else {
 			System.out.println("FILE DOES NOT EXIST"); //TEMP
 			this.file2 = new RandomAccessFile(name, "rwd");
 			this.numRecords = 0;
+
+			//write numRecords to the file
+			file2.writeLong(numRecords);
 		}
 	}
 
@@ -44,18 +46,30 @@ public class ValuesManager {
 	*/
 	public static void insert(long key, String value) throws IOException {
 
+		file2.seek(seekLocation);
+
 		byte[] byteArray = value.getBytes(); //coverts string to byte array
 		file2.writeShort(byteArray.length); //writes length of byte array
 		file2.write(byteArray); //writes actual byte array
 
-		seekLocation += 256;
-		file2.seek(seekLocation);
-		//closeData();
+		seekLocation += 256; //CHANGE THIS VALUE
 
+		incrementRecords();
 	}
 
 	public static void closeData() throws IOException {
 		file2.close();
+	}
+
+	//increments number of records & updates val
+	public static void incrementRecords() throws IOException {
+		numRecords++;
+		file2.seek(0);
+
+		//updated records at val
+		file2.writeLong(numRecords);
+
+		System.out.printf("Number of Records: %d\n", numRecords);
 	}
 
 }
