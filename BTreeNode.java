@@ -4,6 +4,7 @@ import java.io.*;
 public class BTreeNode {
 
 	static long[] nodeArray;
+	
 	public static void main (String[] args){
 
 		//make an array of longs
@@ -14,16 +15,14 @@ public class BTreeNode {
 			nodeArray[i] = -1;
 
 		//TEMP
-		insertKey(-2, 5);
-		insertKey(-1, 2);
 		insertKey(10, 0);
-		insertKey(15, 4);
+
 
 		printArray();
 
 	}
 
-
+	//prints array, used for debug purposes
 	public static void printArray() {
 
 		for (int i = 0; i < nodeArray.length; i++)
@@ -32,7 +31,7 @@ public class BTreeNode {
 
 	public static void insertKey(int key, int valueIndex) {
 
-		for (int i = 2; i < 14; i+= 3) {
+		for (int i = 2; i < 14; i += 3) {
 			//if space is empty then insert key
 			if (isEmpty(i)) {
 				nodeArray[i] = key;
@@ -44,6 +43,7 @@ public class BTreeNode {
 		}
 	}
 
+	//inserts value index to array, called by insertKey()
 	public static void insertValueIndex(int index, int valueIndex) {
 
 		nodeArray[index] = valueIndex;
@@ -59,5 +59,26 @@ public class BTreeNode {
 			return false;
 	}
 
-	public static void shiftElements
+	//shifts all elements up from current index
+	//ex. if index of 1st key, shift from 2nd key onwards
+	public static void shiftElements(int index) {
+
+		//if index is 4th key, get rid of the key & valueIndex
+		if (index == 13) {
+			nodeArray[index] = -1;
+			nodeArray[index + 1] = -1;
+		}
+
+		for (int i = index + 3; i < 14; i += 3) {
+
+			//check if next space is empty
+			if (isEmpty(i + 3)) {
+				//transfer key & value index to next spot
+				
+			}
+
+			
+			//if 
+		}
+	}
 }
