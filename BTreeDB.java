@@ -7,7 +7,7 @@ public class BTreeDB {
 
 		try {
 			
-			RandomAccessFile file = new RandomAccessFile(args[0], "rwd");
+			BTreeManager btm = new BTreeManager(args[0]);
 			ValuesManager vm = new ValuesManager(args[1]);
 
 			Scanner sc = new Scanner(System.in);
@@ -21,7 +21,7 @@ public class BTreeDB {
 
 				//if input is "exit", close program
 				if (command.equals("exit")) {
-					file.close();
+					btm.closeData();
 					vm.closeData();
 					//file2.close();
 					return;
@@ -39,6 +39,14 @@ public class BTreeDB {
 					//else if there is more than 2 elements
 
 				}
+
+				//insert to node dapat to
+				else if (command.equals("insertTest")) {
+					// insert to node will  a key but will mess with value index somewhere
+					//btm.insertToNode();
+				}
+
+
 				//else if invalid command, print "invalid command"
 				else
 					System.out.println("INVALID COMMAND");
