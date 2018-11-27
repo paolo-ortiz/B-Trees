@@ -14,6 +14,9 @@ public class BTreeNode {
 		//fill with partitions
 		for (int i = 0; i < nodeArray.length; i++)
 			nodeArray[i] = -1;
+
+		//TEMP
+		System.out.println("NODE CREATED");
 	}
 
 	//prints array, used for debug purposes
@@ -95,6 +98,8 @@ public class BTreeNode {
 		nodeArray[index] = -1;
 		nodeArray[index + 1] = -1;
 	}
+
+	//we need insert here
 
 	//returns node array
 	public static long[] getArray() {

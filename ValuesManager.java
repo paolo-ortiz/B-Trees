@@ -41,9 +41,7 @@ public class ValuesManager {
 		}
 	}
 
-	/**
-	* Inserts values to data.val
-	*/
+	//Inserts values to data.val
 	public static void insert(long key, String value) throws IOException {
 		
 		seekLocation = (8 + numRecords * 256);
@@ -69,6 +67,11 @@ public class ValuesManager {
 		file2.writeLong(numRecords);
 
 		System.out.printf("Number of Records: %d\n", numRecords); //TEMP
+	}
+
+	//return number of records
+	public static int getNumRecords() {
+		return Math.toIntExact(numRecords);
 	}
 
 }

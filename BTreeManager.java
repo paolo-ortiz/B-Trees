@@ -4,9 +4,10 @@ import java.io.*;
 public class BTreeManager {
 
 	static RandomAccessFile file;
-	static long numNodes;
-	static long seekLocation;
-	static long rootNodeIndex;
+	static long numNodes; //total number of nodes
+	static long seekLocation; //where file will seek to
+	static long rootNodeIndex; //index of root node
+	static int valueIndex = 0; //index of where value is located in data.val
 
 	//Constructor
 	BTreeManager(String name) throws IOException {
@@ -56,8 +57,6 @@ public class BTreeManager {
 			//write values to node
 			writeValuesToNode(node1);
 		}
-
-		
 	}
 
 	public static void writeValuesToNode(BTreeNode node) throws IOException {
@@ -65,18 +64,23 @@ public class BTreeManager {
 		long[] temp = node.getArray();
 
 		file.seek(16); //go to place after the first 2 longs MIGHT HAVE TO CHANGE SEEK VALUE
+
 		//write all longs to data.bt
 		for (int i = 0; i < temp.length; i++)
 			file.writeLong(temp[i]);
 	}
 
-	public static void insertToNode(BTreeNode node) throws IOException {
-
-		
+	public static void insertToNode( int key, int valueIndex) throws IOException {
+		// create node here that pulls value from random access file
+		//node.insertKey(key, valueIndex);
+		valueIndex++;
 	}
 
 	public static void closeData() throws IOException {
 		file.close();
 	}
 
+	public static BTreeNode getNode() {
+		return node1;
+	} 
 }
