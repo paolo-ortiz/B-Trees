@@ -4,27 +4,6 @@ import java.io.*;
 public class BTreeNode {
 
 	static long[] nodeArray;
-	
-	// public static void main (String[] args){
-
-	// 	//make an array of longs
-	// 	nodeArray = new long[14];
-
-	// 	//fill with partitions
-	// 	for (int i = 0; i < nodeArray.length; i++)
-	// 		nodeArray[i] = -1;
-
-	// 	//TEMP
-	// 	insertKey(10, 0);
-	// 	insertKey(13, 1);
-	// 	insertKey(11, 2);
-	// 	insertKey(12, 3);
-	// 	insertKey(9, 4);
-
-
-	// 	printArray();
-
-	// }
 
 	//Constructor
 	BTreeNode() {
@@ -36,7 +15,6 @@ public class BTreeNode {
 		for (int i = 0; i < nodeArray.length; i++)
 			nodeArray[i] = -1;
 	}
-
 
 	//prints array, used for debug purposes
 	public static void printArray() {
@@ -116,5 +94,10 @@ public class BTreeNode {
 
 		nodeArray[index] = -1;
 		nodeArray[index + 1] = -1;
+	}
+
+	//returns node array
+	public static long[] getArray() {
+		return nodeArray;
 	}
 }
