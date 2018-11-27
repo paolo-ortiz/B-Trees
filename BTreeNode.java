@@ -16,11 +16,18 @@ public class BTreeNode {
 
 		//TEMP
 		insertKey(10, 0);
+		insertKey(13, 1);
+		insertKey(11, 2);
+		insertKey(12, 3);
+		insertKey(9, 4);
 
 
 		printArray();
 
 	}
+
+	//Constructor
+	
 
 	//prints array, used for debug purposes
 	public static void printArray() {
@@ -38,8 +45,13 @@ public class BTreeNode {
 				insertValueIndex(i + 1, valueIndex);
 				break;
 			}
-			//else if the current key is greater than the key in array, then move to next one
-			//else if ()
+			//if key to be inserted is less than key in array, shift elements
+			if (key < nodeArray[i]) {
+				shiftElements(i);
+				nodeArray[i] = key;
+				insertValueIndex(i + 1, valueIndex);
+				break;
+			} 
 		}
 	}
 
@@ -63,22 +75,37 @@ public class BTreeNode {
 	//ex. if index of 1st key, shift from 2nd key onwards
 	public static void shiftElements(int index) {
 
-		//if index is 4th key, get rid of the key & valueIndex
-		if (index == 13) {
-			nodeArray[index] = -1;
-			nodeArray[index + 1] = -1;
+		//make copy of node array
+		long[] temp = nodeArray;
+
+		//go through each key in reverse and replace values
+		for (int i = 11; i >= index; i -= 3) {
+
+			//get key & value index from temp and add to higher place in nodeArray
+			long tempKey = temp[i];
+			long tempValueIndex = temp[i + 1];
+
+			//if it is on the 4th key, remove values
+			if (i == 11)
+				removeValues(i);
+			//else shift the values up
+			else if (i != 11) {
+				//replace values in nodeArray
+				nodeArray[i + 3] = tempKey;
+				nodeArray[i + 4] = tempValueIndex;
+
+				//remove values where it was previously
+				removeValues(i);
+			} 
+
 		}
+		
+	}
 
-		for (int i = index + 3; i < 14; i += 3) {
+	//removes values in node array by replacing it with -1
+	public static void removeValues(int index) {
 
-			//check if next space is empty
-			if (isEmpty(i + 3)) {
-				//transfer key & value index to next spot
-				
-			}
-
-			
-			//if 
-		}
+		nodeArray[index] = -1;
+		nodeArray[index + 1] = -1;
 	}
 }
