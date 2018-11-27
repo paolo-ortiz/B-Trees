@@ -2,14 +2,20 @@ import java.util.*;
 import java.io.*;
 
 public class BTreeDB {
+
+	//make node
+	public static BTreeNode node1 = new BTreeNode();
 	
 	public static void main( String[] args ) {
 
 		try {
 			
-			RandomAccessFile file = new RandomAccessFile(args[0], "rwd");
+			BTreeManager btm = new BTreeManager(args[0]);
 			ValuesManager vm = new ValuesManager(args[1]);
-
+			//BTreeNode does not have getNode 
+			//BTreeNode bn = btm.getNode();
+			//temp index
+			int index = 0;
 			Scanner sc = new Scanner(System.in);
 			while (sc.hasNext()) {
 
@@ -21,7 +27,7 @@ public class BTreeDB {
 
 				//if input is "exit", close program
 				if (command.equals("exit")) {
-					file.close();
+					btm.closeData();
 					vm.closeData();
 					//file2.close();
 					return;
@@ -34,11 +40,21 @@ public class BTreeDB {
 					long key = rd.nextLong();
 					String value = rd.nextLine().trim();
 					
+
 					insertToVal(key, value, vm);
+					insertToBT(key,index, btm);
 
 					//else if there is more than 2 elements
 
 				}
+
+				//insert to node dapat to
+				else if (command.equals("insertTest")) {
+					
+					//btm.insertToNode();
+				}
+
+
 				//else if invalid command, print "invalid command"
 				else
 					System.out.println("INVALID COMMAND");
@@ -49,11 +65,18 @@ public class BTreeDB {
 		}
 	}	
 
-	//inserts value into tree
+	//inserts value into data.val
 	public static void insertToVal(long key, String word, ValuesManager vm) throws IOException {
 		
 		System.out.printf("Inserted %s\n", word);
 		vm.insert(key, word);
+
+	}
+
+	//inserts value into data.bt
+	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
+		btm.insertToNode(key,index);
+
 
 	}
 
