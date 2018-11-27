@@ -7,7 +7,9 @@ public class BTreeDB {
 
 		try {
 			
-			//BTreeManager btm = new BTreeManager(args[0]);
+	
+
+			BTreeManager btm = new BTreeManager(args[0]);
 			ValuesManager vm = new ValuesManager(args[1]);
 
 			Scanner sc = new Scanner(System.in);
