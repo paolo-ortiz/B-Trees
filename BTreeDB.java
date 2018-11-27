@@ -7,11 +7,14 @@ public class BTreeDB {
 
 		try {
 			
+	
+
 			BTreeManager btm = new BTreeManager(args[0]);
 			ValuesManager vm = new ValuesManager(args[1]);
 
 			Scanner sc = new Scanner(System.in);
 			while (sc.hasNext()) {
+				String value;
 
 				String input = sc.nextLine(); //get input
 
@@ -30,9 +33,20 @@ public class BTreeDB {
 				//else if input is "insert", check if it is valid
 				//first, make sure input has more than 1 value
 				if (command.equals("insert")) {
-
+					
 					long key = rd.nextLong();
-					String value = rd.nextLine().trim();
+					
+					if(rd.hasNextLine() == true) {
+						
+					 value = rd.nextLine().trim();	//checks if there is any more input 
+					}
+					
+					
+					else {
+						
+					 value = ""; 	//if no input is found, then a blank is added instead
+					}
+					
 					
 					insertToVal(key, value, vm);
 
