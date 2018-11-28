@@ -4,14 +4,16 @@ import java.io.*;
 public class BTreeDB {
 
 	//make node
-	public static BTreeNode node1 = new BTreeNode();
+	//public static BTreeNode node1 = new BTreeNode();
 	static boolean exists = false; //for existance check 
 	public static void main( String[] args ) {
 
 		try {
 			
 			BTreeManager btm = new BTreeManager(args[0]);
+			
 			ValuesManager vm = new ValuesManager(args[1]);
+			
 			//BTreeNode does not have getNode 
 			//BTreeNode bn = btm.getNode();
 			//temp index
@@ -76,7 +78,7 @@ public class BTreeDB {
 	//inserts value into data.bt
 	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
 		btm.insertToNode(key,index);
-
+		
 
 	}
 

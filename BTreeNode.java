@@ -7,14 +7,14 @@ public class BTreeNode {
 	//initializes that the first value to be inserted still does not exist in the raf
 	static boolean exists = false;
 	//Constructor
-	BTreeNode() {
+	BTreeNode(long[] valuesToPutInNode) { //will mess with this
 
 		//make an array of longs
 		this.nodeArray = new long[14];
 
 		//fill with partitions
 		for (int i = 0; i < nodeArray.length; i++)
-			nodeArray[i] = -1;
+			 nodeArray[i] = valuesToPutInNode[i]; //edited this
 
 		//TEMP
 		System.out.println("NODE CREATED");
@@ -63,7 +63,6 @@ public class BTreeNode {
 				//works
 			}
 			
-
 			
 			else{
 				//create a boolean
