@@ -76,11 +76,16 @@ public class ValuesManager {
 
 	public static String getString(int valueIndex) throws IOException {
 
-		seekLocation = (8 + valueIndex * 256);
+		seekLocation = (8 + valueIndex * 256); //go to correct string length
 		file2.seek(seekLocation);
 
-		return "HI";
+		int length = file2.readByte(); //get length of byte array
+		byte[] temp = new byte[length]; //to read byte array
+		file2.read(temp); //read values to temp
 
+		String value = new String(temp, "UTF-8");
+
+		return value;
 
 	}
 

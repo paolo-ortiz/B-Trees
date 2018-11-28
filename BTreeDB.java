@@ -44,9 +44,14 @@ public class BTreeDB {
 
 				if(command.equals("select")) {
 
-					long key = rd.nextLong();
+					long key = rd.nextLong(); //gets key from command
 
-					System.out.println(btm.getValueIndex(key));
+					int valueIndex = btm.getValueIndex(key); //get value index
+
+					if (valueIndex != -1) { //a value of -1 means key is not in btree
+						String value = vm.getString(valueIndex); //get string
+						System.out.printf("%d ==> %s\n", key, value);
+					} else System.out.printf("ERROR: %d does not exist\n", key);
 
 				}
 

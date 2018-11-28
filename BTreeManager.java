@@ -88,7 +88,7 @@ public class BTreeManager {
 		
 		valueIndex++;
 
-		initialNode.printArray();
+		//initialNode.printArray();
 	}
 
 	public static void closeData() throws IOException {
