@@ -9,6 +9,8 @@ public class BTreeManager {
 	static long rootNodeIndex; //index of root node
 	static int valueIndex = 0; //index of where value is located in data.val
 
+	static BTreeNode initialNode; //TEMPORARY
+
 	//Constructor
 	BTreeManager(String name) throws IOException {
 
@@ -45,8 +47,9 @@ public class BTreeManager {
 			this.numNodes = 1;
 			this.rootNodeIndex = 0;
 
+
 			//create inital node
-			BTreeNode node1 = new BTreeNode();
+			this.initialNode = new BTreeNode();
 
 			//write numNodes to the file
 			file.writeLong(numNodes);
@@ -55,7 +58,7 @@ public class BTreeManager {
 			file.writeLong(rootNodeIndex);
 
 			//write values to node
-			writeValuesToNode(node1);
+			writeValuesToNode(initialNode);
 		}
 	}
 
@@ -70,17 +73,26 @@ public class BTreeManager {
 			file.writeLong(temp[i]);
 	}
 
-	public static void insertToNode( int key, int valueIndex) throws IOException {
-		// create node here that pulls value from random access file
-		//node.insertKey(key, valueIndex);
+	public static void insertToNode (long key, int index) throws IOException {
+		
+		initialNode.insertKey(key,valueIndex); //insert key into node array
+
+		//seek to correct position SEEK POSITION IS TEMPORARY
+		file.seek(16);
+
+		//get node array
+		long[] temp = initialNode.getArray();
+
+		//write array to file
+		for (int i = 0; i < temp.length; i++)
+			file.writeLong(temp[i]);
+		
 		valueIndex++;
+
+		initialNode.printArray();
 	}
 
 	public static void closeData() throws IOException {
 		file.close();
 	}
-
-	public static BTreeNode getNode() {
-		return node1;
-	} 
 }

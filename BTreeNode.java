@@ -26,7 +26,7 @@ public class BTreeNode {
 			System.out.println(nodeArray[i]);
 	}
 
-	public static void insertKey(int key, int valueIndex) {
+	public static void insertKey(long key, int valueIndex) {
 
 		for (int i = 2; i < 14; i += 3) {
 			//if space is empty then insert key
@@ -99,7 +99,11 @@ public class BTreeNode {
 		nodeArray[index + 1] = -1;
 	}
 
-	//we need insert here
+	//get node so we write it to the file
+	public static long[] returnNode (){
+		return nodeArray;
+	}
+
 
 	//returns node array
 	public static long[] getArray() {

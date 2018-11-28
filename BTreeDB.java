@@ -12,8 +12,10 @@ public class BTreeDB {
 			
 			BTreeManager btm = new BTreeManager(args[0]);
 			ValuesManager vm = new ValuesManager(args[1]);
-			BTreeNode bn = btm.getNode();
-
+			//BTreeNode does not have getNode 
+			//BTreeNode bn = btm.getNode();
+			//temp index
+			int index = 0;
 			Scanner sc = new Scanner(System.in);
 			while (sc.hasNext()) {
 
@@ -40,6 +42,7 @@ public class BTreeDB {
 					
 
 					insertToVal(key, value, vm);
+					insertToBT(key,index, btm);
 
 					//else if there is more than 2 elements
 
@@ -71,8 +74,8 @@ public class BTreeDB {
 	}
 
 	//inserts value into data.bt
-	public static void insertToBT(long key, long index, BTreeManager btm) {
-		
+	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
+		btm.insertToNode(key,index);
 
 
 	}
