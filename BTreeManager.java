@@ -8,7 +8,8 @@ public class BTreeManager {
 	static long seekLocation; //where file will seek to
 	static long rootNodeIndex; //index of root node
 	static int valueIndex = 0; //index of where value is located in data.val
-	static long[] thingsTopPutInFile = new long[14];
+	static boolean exists = false; // for exist checks
+	static BTreeNode initialNode; //TEMPORARY
 
 	//Constructor
 	BTreeManager(String name) throws IOException {
@@ -48,15 +49,7 @@ public class BTreeManager {
 
 
 			//create inital node
-			BTreeNode node1 = new BTreeNode();
-			//might not need this
-			thingsTopPutInFile = node1.returnNode(); 
-
-			//might not need this
-			// //initial write to file
-			// for(int i = 0; i < thingsTopPutInFile.length;i++){
-			// 	file.writeLong(thingsTopPutInFile[i]);
-			// }
+			this.initialNode = new BTreeNode();
 
 			//write numNodes to the file
 			file.writeLong(numNodes);
@@ -65,7 +58,7 @@ public class BTreeManager {
 			file.writeLong(rootNodeIndex);
 
 			//write values to node
-			writeValuesToNode(node1);
+			writeValuesToNode(initialNode);
 		}
 	}
 
@@ -80,25 +73,35 @@ public class BTreeManager {
 			file.writeLong(temp[i]);
 	}
 
-	public static void insertToNode ( long key, int valueIndex) throws IOException {
-		// create node here that pulls value from random access file
-		BTreeNode node = new BTreeNode(); 
-		node.insertKey(key,valueIndex); 
-		//write to file then?
+	public static void insertToNode (long key, int index) throws IOException {
+		
+		initialNode.insertKey(key,valueIndex); //insert key into node array
+
+		//seek to correct position SEEK POSITION IS TEMPORARY
 		file.seek(16);
-		thingsTopPutInFile = node.getArray();
-		for(int i = 0; i < thingsTopPutInFile.length; i++){
-			file.writeLong(thingsTopPutInFile[i]);
-		}
-		//node.insertKey(key, valueIndex);
+
+		//get node array
+		long[] temp = initialNode.getArray();
+
+		//write array to file
+		for (int i = 0; i < temp.length; i++)
+			file.writeLong(temp[i]);
+		
 		valueIndex++;
+
+		//initialNode.printArray();
 	}
 
+	//check if key already exists
+	public static boolean present(long key){
+		
+		exists = initialNode.existance(key);
+		//works
+		return exists;
+		
+	}
+	
 	public static void closeData() throws IOException {
 		file.close();
 	}
-
-	// public static BTreeNode getNode() {
-	// 	return node1;
-	// } 
 }

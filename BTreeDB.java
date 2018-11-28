@@ -5,7 +5,7 @@ public class BTreeDB {
 
 	//make node
 	public static BTreeNode node1 = new BTreeNode();
-	
+	static boolean exists = false; //for existance check 
 	public static void main( String[] args ) {
 
 		try {
@@ -36,22 +36,22 @@ public class BTreeDB {
 				//else if input is "insert", check if it is valid
 				//first, make sure input has more than 1 value
 				if (command.equals("insert")) {
-
+	
 					long key = rd.nextLong();
 					String value = rd.nextLine().trim();
 					
-
-					insertToVal(key, value, vm);
-					insertToBT(key,index, btm);
-
+					//check if the key is present first
+					exists = btm.present(key);
+					if(exists == false){
+						insertToVal(key, value, vm);
+						insertToBT(key,index, btm);
+					}
+		
+					else{
+						System.out.println("ERROR: " + key +" already exists.");
+					}
 					//else if there is more than 2 elements
 
-				}
-
-				//insert to node dapat to
-				else if (command.equals("insertTest")) {
-					
-					//btm.insertToNode();
 				}
 
 
@@ -80,5 +80,5 @@ public class BTreeDB {
 
 	}
 
-	
+
 }

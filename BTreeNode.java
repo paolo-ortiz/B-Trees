@@ -4,7 +4,8 @@ import java.io.*;
 public class BTreeNode {
 
 	static long[] nodeArray;
-
+	//initializes that the first value to be inserted still does not exist in the raf
+	static boolean exists = false;
 	//Constructor
 	BTreeNode() {
 
@@ -28,22 +29,43 @@ public class BTreeNode {
 
 	public static void insertKey(long key, int valueIndex) {
 
-		for (int i = 2; i < 14; i += 3) {
-			//if space is empty then insert key
-			if (isEmpty(i)) {
-				nodeArray[i] = key;
-				insertValueIndex(i + 1, valueIndex);
-				break;
+		//before inserting check if the key already exists except for -1
+			
+			for (int i = 2; i < 14; i += 3) {
+				//if space is empty then insert key
+				if (isEmpty(i)) {
+					nodeArray[i] = key;
+					insertValueIndex(i + 1, valueIndex);
+					break;
+				}
+				//if key to be inserted is less than key in array, shift elements
+				if (key < nodeArray[i]) {
+					shiftElements(i);
+					nodeArray[i] = key;
+					insertValueIndex(i + 1, valueIndex);
+					break;
+				} 
 			}
-			//if key to be inserted is less than key in array, shift elements
-			if (key < nodeArray[i]) {
-				shiftElements(i);
-				nodeArray[i] = key;
-				insertValueIndex(i + 1, valueIndex);
-				break;
-			} 
-		}
+		
 	}
+	
+	//create method to check if tvalue already exists
+	public static boolean existance(long key){
+		for (int i = 2; i < 14; i += 3) {
+			if(key == nodeArray[i]){
+				exists = true;
+				break;
+				//works
+			}
+			else{
+				//create a boolean
+				exists = false;	
+			}
+		}
+
+		return exists;
+	}
+	
 
 	//inserts value index to array, called by insertKey()
 	public static void insertValueIndex(int index, int valueIndex) {

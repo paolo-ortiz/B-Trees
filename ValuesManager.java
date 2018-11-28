@@ -6,7 +6,7 @@ public class ValuesManager {
 	static RandomAccessFile file2; //needs to be declared so it can be used by other methods
 	static long numRecords;
 	static long seekLocation;
-
+	
 	//Constructor
 	ValuesManager(String name) throws IOException {
 
