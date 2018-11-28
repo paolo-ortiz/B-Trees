@@ -41,7 +41,7 @@ public class BTreeManager {
 
 			//renews stuffFromBT
 			for(int i = 0; i <stuffFromBT.length; i++){
-				file.seek(seekLocation+8*(i+1));
+				file.seek(seekLocation+8*(i+2));
 				stuffFromBT[i] = file.readLong();	
 			}
 			
@@ -135,4 +135,7 @@ public class BTreeManager {
 	public static void closeData() throws IOException {
 		file.close();
 	}
+	
+	//for selecting code taken from git
+	
 }
