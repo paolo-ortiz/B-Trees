@@ -47,7 +47,6 @@ public class BTreeManager {
 			this.numNodes = 1;
 			this.rootNodeIndex = 0;
 
-
 			//create inital node
 			this.initialNode = new BTreeNode();
 
@@ -95,4 +94,28 @@ public class BTreeManager {
 	public static void closeData() throws IOException {
 		file.close();
 	}
+
+	public static int getValueIndex(long key) throws IOException {
+
+		seekLocation = 32; //location of 1st key
+
+		//go thru the 4 keys
+		for(int seekLocation = 32; seekLocation < 128; seekLocation += 8) {
+			file.seek(seekLocation); //seeks key
+
+			//if key matches
+			if(file.readLong() == key) {
+				file.seek(seekLocation + 8); //gets the value index
+				long tempValIndex = file.readLong();
+
+				return Math.toIntExact(tempValIndex); //convert to int before returning
+			}
+
+		}
+
+		return -1;
+			
+	}
+
+
 }

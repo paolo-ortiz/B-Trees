@@ -2,9 +2,6 @@ import java.util.*;
 import java.io.*;
 
 public class BTreeDB {
-
-	//make node
-	public static BTreeNode node1 = new BTreeNode();
 	
 	public static void main( String[] args ) {
 
@@ -29,7 +26,6 @@ public class BTreeDB {
 				if (command.equals("exit")) {
 					btm.closeData();
 					vm.closeData();
-					//file2.close();
 					return;
 				}
 				
@@ -44,16 +40,15 @@ public class BTreeDB {
 					insertToVal(key, value, vm);
 					insertToBT(key,index, btm);
 
-					//else if there is more than 2 elements
-
 				}
 
-				//insert to node dapat to
-				else if (command.equals("insertTest")) {
-					
-					//btm.insertToNode();
-				}
+				if(command.equals("select")) {
 
+					long key = rd.nextLong();
+
+					System.out.println(btm.getValueIndex(key));
+
+				}
 
 				//else if invalid command, print "invalid command"
 				else
@@ -76,8 +71,6 @@ public class BTreeDB {
 	//inserts value into data.bt
 	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
 		btm.insertToNode(key,index);
-
-
 	}
 
 	
