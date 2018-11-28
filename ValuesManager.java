@@ -74,4 +74,14 @@ public class ValuesManager {
 		return Math.toIntExact(numRecords);
 	}
 
+	public static String getString(int valueIndex) throws IOException {
+
+		seekLocation = (8 + valueIndex * 256);
+		file2.seek(seekLocation);
+
+		return "HI";
+
+
+	}
+
 }
