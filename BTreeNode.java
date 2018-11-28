@@ -52,11 +52,19 @@ public class BTreeNode {
 	//create method to check if tvalue already exists
 	public static boolean existance(long key){
 		for (int i = 2; i < 14; i += 3) {
-			if(key == nodeArray[i]){
+			//messes with -1
+			if(key == -1 && nodeArray[i+1] == -1){
+				exists = false; 
+			}
+			
+			else if(key == nodeArray[i] ){
 				exists = true;
 				break;
 				//works
 			}
+			
+
+			
 			else{
 				//create a boolean
 				exists = false;	
