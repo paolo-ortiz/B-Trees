@@ -97,19 +97,34 @@ public class BTreeManager {
 
 	public static int getValueIndex(long key) throws IOException {
 
-		seekLocation = 32; //location of 1st key
+		int tempIndex = 2;
 
 		//go thru the 4 keys
 		for(int seekLocation = 32; seekLocation < 128; seekLocation += 8) {
 			file.seek(seekLocation); //seeks key
 
+			//if key is -1
+			if (key == -1 && file.readLong() == key) {
+				if (!(initialNode.isEmpty(tempIndex))) {
+					file.seek(seekLocation + 8); //gets the value index
+					long tempValIndex = file.readLong();
+
+					System.out.println(tempValIndex);
+					return Math.toIntExact(tempValIndex); //convert to int before returning
+				}
+			}
+
 			//if key matches
-			if(file.readLong() == key) {
+			if (file.readLong() == key) {
 				file.seek(seekLocation + 8); //gets the value index
 				long tempValIndex = file.readLong();
 
 				return Math.toIntExact(tempValIndex); //convert to int before returning
+
+			
 			}
+
+			tempIndex += 3;
 
 		}
 
