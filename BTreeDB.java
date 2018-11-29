@@ -14,6 +14,7 @@ public class BTreeDB {
 			//temp index
 			int index = 0;
 			Scanner sc = new Scanner(System.in);
+			
 			while (sc.hasNext()) {
 
 				String input = sc.nextLine(); //get input
@@ -36,28 +37,26 @@ public class BTreeDB {
 					long key = rd.nextLong();
 					String value = rd.nextLine().trim();
 					
-
-					insertToVal(key, value, vm);
+					insertToVal(value, vm);
 					insertToBT(key,index, btm);
+
+					System.out.printf("%d inserted\n", key);
 
 				}
 
-				if(command.equals("select")) {
+				else if(command.equals("select")) {
 
 					long key = rd.nextLong(); //gets key from command
 
 					int valueIndex = btm.getValueIndex(key); //get value index
 
-					if (valueIndex != -1) { //a value of -1 means key is not in btree
-						String value = vm.getString(valueIndex); //get string
-						System.out.printf("%d ==> %s\n", key, value);
-					} else System.out.printf("ERROR: %d does not exist\n", key);
+					select(key, valueIndex, vm);
 
 				}
 
 				//else if invalid command, print "invalid command"
 				else
-					System.out.println("INVALID COMMAND");
+					System.out.println("ERROR: Invalid Command");
 
 			}
 		} catch (IOException e) {
@@ -66,11 +65,8 @@ public class BTreeDB {
 	}	
 
 	//inserts value into data.val
-	public static void insertToVal(long key, String word, ValuesManager vm) throws IOException {
-		
-		System.out.printf("Inserted %s\n", word);
-		vm.insert(key, word);
-
+	public static void insertToVal(String word, ValuesManager vm) throws IOException {
+		vm.insert(word);
 	}
 
 	//inserts value into data.bt
@@ -78,5 +74,12 @@ public class BTreeDB {
 		btm.insertToNode(key,index);
 	}
 
-	
+	public static void select(long key, int valueIndex, ValuesManager vm) throws IOException {
+
+		if (valueIndex != -1) { //a value of -1 means key is not in btree
+			String value = vm.getString(valueIndex); //get string
+			System.out.printf("%d ==> %s\n", key, value);
+		} else 
+			System.out.printf("ERROR: %d does not exist\n", key);
+	}
 }

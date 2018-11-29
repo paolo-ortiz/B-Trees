@@ -3,52 +3,50 @@ import java.io.*;
 
 public class BTreeNode {
 
-	static long[] nodeArray;
+	static long[] nodeArray; //contains 14 long ints, which correspond to values
 
 	//Constructor
 	BTreeNode() {
 
-		//make an array of longs
+		//instantiate array of longs
 		this.nodeArray = new long[14];
 
-		//fill with partitions
+		//fill with partitions, -1 means space is empty
 		for (int i = 0; i < nodeArray.length; i++)
 			nodeArray[i] = -1;
-
-		//TEMP
-		System.out.println("NODE CREATED");
 	}
 
 	//prints array, used for debug purposes
 	public static void printArray() {
 
+		//prints each value on a new line
 		for (int i = 0; i < nodeArray.length; i++)
 			System.out.println(nodeArray[i]);
 	}
 
+	//inserts key & valueIndex into node array
+	//requires key & valueIndex, which will be inserted
 	public static void insertKey(long key, int valueIndex) {
 
-		for (int i = 2; i < 14; i += 3) {
-			//if space is empty then insert key
+		//starts at 2, which is index of 1st key
+		//increments by 3, to next key
+		for (int i = 2; i < 13; i += 3) {
+			
+			//if space is empty then insert key & value index
 			if (isEmpty(i)) {
-				nodeArray[i] = key;
-				insertValueIndex(i + 1, valueIndex);
+				nodeArray[i] = key; //insert key
+				nodeArray[i + 1] = valueIndex; //insert valueIndex at space next to key
 				break;
 			}
+
 			//if key to be inserted is less than key in array, shift elements
 			if (key < nodeArray[i]) {
-				shiftElements(i);
-				nodeArray[i] = key;
-				insertValueIndex(i + 1, valueIndex);
+				shiftElements(i); //shift elements
+				nodeArray[i] = key; //insert key
+				nodeArray[i + 1] = valueIndex; //insert valueIndex at space next to key
 				break;
 			} 
 		}
-	}
-
-	//inserts value index to array, called by insertKey()
-	public static void insertValueIndex(int index, int valueIndex) {
-
-		nodeArray[index] = valueIndex;
 	}
 
 	//checks if space is empty
@@ -62,16 +60,17 @@ public class BTreeNode {
 	}
 
 	//shifts all elements up from current index
-	//ex. if index of 1st key, shift from 2nd key onwards
+	//ex. if index of 1st key, shift from all elements from 1st key
 	public static void shiftElements(int index) {
 
 		//make copy of node array
 		long[] temp = nodeArray;
 
 		//go through each key in reverse and replace values
+		//4th key is at index 11
 		for (int i = 11; i >= index; i -= 3) {
 
-			//get key & value index from temp and add to higher place in nodeArray
+			//get key & value index from temp
 			long tempKey = temp[i];
 			long tempValueIndex = temp[i + 1];
 
@@ -80,7 +79,7 @@ public class BTreeNode {
 				removeValues(i);
 			//else shift the values up
 			else if (i != 11) {
-				//replace values in nodeArray
+				//place values in higher index in nodeArray
 				nodeArray[i + 3] = tempKey;
 				nodeArray[i + 4] = tempValueIndex;
 
@@ -93,13 +92,14 @@ public class BTreeNode {
 	}
 
 	//removes values in node array by replacing it with -1
+	//requires index so it knows what to remove
 	public static void removeValues(int index) {
 
 		nodeArray[index] = -1;
 		nodeArray[index + 1] = -1;
 	}
 
-	//get node so we write it to the file
+	//returns node so it can be written to data.bt
 	public static long[] returnNode (){
 		return nodeArray;
 	}
