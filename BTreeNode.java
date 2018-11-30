@@ -6,14 +6,15 @@ public class BTreeNode {
 	static long[] nodeArray; //contains 14 long ints, which correspond to values
 
 	//Constructor
-	BTreeNode() {
+	//requires long[] to update values in node
+	BTreeNode(long[] BTreeValues) {
 
 		//instantiate array of longs
 		this.nodeArray = new long[14];
 
 		//fill with partitions, -1 means space is empty
 		for (int i = 0; i < nodeArray.length; i++)
-			nodeArray[i] = -1;
+			nodeArray[i] = BTreeValues[i];
 	}
 
 	//prints array, used for debug purposes
@@ -57,6 +58,29 @@ public class BTreeNode {
 			return true;
 		else
 			return false;
+	}
+
+	//checks if key exists in node array
+	//requires key to be checked
+	public static boolean keyExists (long key) {
+
+		boolean exists = false;
+
+		//goes thru each key
+		for (int i = 2; i < 14; i += 3) {
+
+			//checks if key is -1 and value index is -1
+			if (key == -1 && nodeArray[i + 1] == -1)
+				exists = false;
+			//if the key matches
+			else if (key == nodeArray[i]) {
+				exists = true;
+				break;
+			} else 
+				exists = false;
+		}
+
+		return exists;
 	}
 
 	//shifts all elements up from current index

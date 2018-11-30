@@ -36,11 +36,18 @@ public class BTreeDB {
 
 					long key = rd.nextLong();
 					String value = rd.nextLine().trim();
-					
-					insertToVal(value, vm);
-					insertToBT(key,index, btm);
 
-					System.out.printf("%d inserted\n", key);
+					//check if key already exists
+					boolean exists = btm.isPresent(key);
+					//if it does not exist, then insert
+					if (exists == false) {
+						insertToVal(value, vm);
+						insertToBT(key,index, btm);
+						System.out.printf("%d inserted\n", key);
+					} else 
+						System.out.printf("ERROR: %d already exists\n", key);	
+
+					
 
 				}
 
