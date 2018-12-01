@@ -11,6 +11,8 @@ public class BTreeManager {
 
 	static long[] BTreeValues = new long[14]; //TEMP
 
+	static ArrayList<long[]> arrListOfNodeArrs; //contains all node arrays
+
 	static BTreeNode initialNode; //TEMPORARY
 
 //-------------------------------------------------------------------------------------
@@ -20,7 +22,7 @@ public class BTreeManager {
 	BTreeManager(String name) throws IOException {
 
 		seekLocation = 0; //initial read position
-
+ 		
 		//creates temporary file
 		//when data files do not exist, then it creates one
 		File tempFile = new File(name);
@@ -32,14 +34,31 @@ public class BTreeManager {
 			//instantiate data.bt RAF
 			this.file = new RandomAccessFile(name, "rwd");
 
+			//instantiate array list
+			arrListOfNodeArrs = new ArrayList<long[]>();
+
 			//updates the values in node array
-			for (int i = 0; i < BTreeValues.length; i++) {
-				file.seek(seekLocation + 8 * (i + 2)); //reads all the values in BTree, minus header
-				BTreeValues[i] = file.readLong(); //updates values
-			}	
+			//first loop, goes through each element of array list
+			//second loop, goes through each element of node array
+			for (int i = 0; i < arrListOfNodeArrs.size(); i++) {
+
+				for (int j = 0; j < BTreeValues.length; j++) {
+
+					seekLocation = (8 * j + 2);
+					file.seek(seekLocation + 8 * (j + 2)); //reads all the values in BTree, minus header
+					BTreeValues[j] = file.readLong(); //updates values
+				}	
+
+				//set i'th element in array list to btreevalues
+				arrListOfNodeArrs.set(i, BTreeValues);
+			}
 
 			//refresh values
 			this.initialNode = new BTreeNode(BTreeValues);
+
+			//get number of nodes
+			file.seek(0);
+			numNodes = file.readLong();
 		}
 		//else if first time creating data.bt
 		else {
@@ -61,8 +80,15 @@ public class BTreeManager {
 			//create inital node
 			this.initialNode = new BTreeNode(BTreeValues);
 
+			//instantiate array list
+			arrListOfNodeArrs = new ArrayList<long[]>();
+
+			//add initial node to array list
+			arrListOfNodeArrs.add(BTreeValues);
 		}
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//used for initialization
 	//writes node array to data.bt

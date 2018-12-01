@@ -71,15 +71,21 @@ public class BTreeDB {
 		}
 	}	
 
+//-------------------------------------------------------------------------------------
+
 	//inserts value into data.val
 	public static void insertToVal(String word, ValuesManager vm) throws IOException {
 		vm.insert(word);
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//inserts value into data.bt
 	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
 		btm.insertToNode(key,index);
 	}
+
+//-------------------------------------------------------------------------------------
 
 	public static void select(long key, int valueIndex, ValuesManager vm) throws IOException {
 
