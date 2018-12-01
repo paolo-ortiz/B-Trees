@@ -94,6 +94,11 @@ public class BTreeManager {
 			file.writeLong(temp[i]);
 		
 		valueIndex++; //increment valueIndex
+
+		//TEMP
+		if (initialNode.isFull())
+			System.out.println("Node is Full");
+		//TEMP
 	}
 
 	//check if key already exists

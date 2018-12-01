@@ -60,6 +60,19 @@ public class BTreeNode {
 			return false;
 	}
 
+	//checks if array contains 4 keys
+	public static boolean isFull() {
+
+		//go through all keys & check if they are not empty
+		for (int i = 2; i < 13; i += 3) {
+			if (isEmpty(i))
+				return false; //return false if one space is empty
+		}
+
+		//return true if all spaced are filled
+		return true;
+	}
+
 	//checks if key exists in node array
 	//requires key to be checked
 	public static boolean keyExists (long key) {
@@ -133,4 +146,5 @@ public class BTreeNode {
 	public static long[] getArray() {
 		return nodeArray;
 	}
+
 }
