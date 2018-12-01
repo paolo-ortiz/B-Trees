@@ -5,6 +5,8 @@ public class BTreeNode {
 
 	static long[] nodeArray; //contains 14 long ints, which correspond to values
 
+//-------------------------------------------------------------------------------------
+
 	//Constructor
 	//requires long[] to update values in node
 	BTreeNode(long[] BTreeValues) {
@@ -17,6 +19,8 @@ public class BTreeNode {
 			nodeArray[i] = BTreeValues[i];
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//prints array, used for debug purposes
 	public static void printArray() {
 
@@ -24,6 +28,8 @@ public class BTreeNode {
 		for (int i = 0; i < nodeArray.length; i++)
 			System.out.println(nodeArray[i]);
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//inserts key & valueIndex into node array
 	//requires key & valueIndex, which will be inserted
@@ -50,6 +56,8 @@ public class BTreeNode {
 		}
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//checks if space is empty
 	public static boolean isEmpty(int index) {
 
@@ -59,6 +67,8 @@ public class BTreeNode {
 		else
 			return false;
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//checks if array contains 4 keys
 	public static boolean isFull() {
@@ -72,6 +82,8 @@ public class BTreeNode {
 		//return true if all spaced are filled
 		return true;
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//checks if key exists in node array
 	//requires key to be checked
@@ -95,6 +107,8 @@ public class BTreeNode {
 
 		return exists;
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//shifts all elements up from current index
 	//ex. if index of 1st key, shift from all elements from 1st key
@@ -128,6 +142,8 @@ public class BTreeNode {
 		
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//removes values in node array by replacing it with -1
 	//requires index so it knows what to remove
 	public static void removeValues(int index) {
@@ -136,11 +152,14 @@ public class BTreeNode {
 		nodeArray[index + 1] = -1;
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//returns node so it can be written to data.bt
 	public static long[] returnNode (){
 		return nodeArray;
 	}
 
+//-------------------------------------------------------------------------------------
 
 	//returns node array
 	public static long[] getArray() {

@@ -13,6 +13,8 @@ public class BTreeManager {
 
 	static BTreeNode initialNode; //TEMPORARY
 
+//-------------------------------------------------------------------------------------
+
 	//Constructor
 	//requires name of .bt file
 	BTreeManager(String name) throws IOException {
@@ -79,6 +81,8 @@ public class BTreeManager {
 			file.writeLong(BTreeValues[i]);
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//inserts node to node array & updates data.bt
 	//requires key & index, which will be written to data.bt
 	public static void insertToNode (long key, int index) throws IOException {
@@ -114,7 +118,12 @@ public class BTreeManager {
 
 		//write values
 		writeValuesToBTree(seekLocation);
+
+		//update number of nodes
+		incrementNodes();
 	}
+
+//-------------------------------------------------------------------------------------	
 
 	//check if key already exists
 	//requires key to check if is present;
@@ -126,10 +135,14 @@ public class BTreeManager {
 		return exists;
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//closes data.bt properly when program is closed
 	public static void closeData() throws IOException {
 		file.close();
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//returns value index of key
 	//requires key to get value index
@@ -172,5 +185,15 @@ public class BTreeManager {
 			
 	}
 
+//-------------------------------------------------------------------------------------
 
+	//increments number of records & updates data.bt
+	public static void incrementNodes() throws IOException {
+
+		numNodes++; //increment number of nodes
+		file.seek(0); //go to start of data.bt, where number of nodes is stored
+
+		//updates records at data.bt
+		file.writeLong(numNodes);
+	}	
 }

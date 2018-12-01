@@ -7,6 +7,8 @@ public class ValuesManager {
 	static long numRecords; //number of records in data.val
 	static long seekLocation; //pointer for data.val
 
+//-------------------------------------------------------------------------------------
+
 	//Constructor
 	//requires name of .val file
 	ValuesManager(String name) throws IOException {
@@ -41,6 +43,8 @@ public class ValuesManager {
 		}
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//Inserts values to data.val
 	//requires value to be placed in data.val
 	public static void insert(String value) throws IOException {
@@ -57,10 +61,14 @@ public class ValuesManager {
 		incrementRecords();
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//closes data.val properly when program is closed
 	public static void closeData() throws IOException {
 		file2.close();
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//increments number of records & updates data.val
 	public static void incrementRecords() throws IOException {
@@ -71,10 +79,14 @@ public class ValuesManager {
 		file2.writeLong(numRecords);
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//return number of records
 	public static int getNumRecords() {
 		return Math.toIntExact(numRecords);
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//gets string value from data.val
 	//requires valueIndex to determine how much to seek
