@@ -46,20 +46,20 @@ public class BTreeDB {
 						System.out.printf("%d inserted\n", key);
 					} else 
 						System.out.printf("ERROR: %d already exists\n", key);	
-
-					
-
 				}
-
-				else if(command.equals("select")) {
+				else if (command.equals("select")) {
 
 					long key = rd.nextLong(); //gets key from command
 
 					int valueIndex = btm.getValueIndex(key); //get value index
 
 					select(key, valueIndex, vm);
-
 				}
+				//TEMP
+				else if (command.equals("new")) {
+					btm.writeNewNode();
+				}
+				//TEMP
 
 				//else if invalid command, print "invalid command"
 				else

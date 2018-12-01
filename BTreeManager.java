@@ -53,7 +53,8 @@ public class BTreeManager {
 			file.writeLong(rootNodeIndex);
 
 			//write values to node
-			writeValuesToBTree();
+			//starts at 16 since it is the first node
+			writeValuesToBTree(16);
 
 			//create inital node
 			this.initialNode = new BTreeNode(BTreeValues);
@@ -63,14 +64,15 @@ public class BTreeManager {
 
 	//used for initialization
 	//writes node array to data.bt
-	public static void writeValuesToBTree() throws IOException {
+	//requires starting location to know where to seek
+	public static void writeValuesToBTree(long seekLocation) throws IOException {
 
 		//create a size 14 array with -1s
 		for (int i = 0; i < BTreeValues.length; i++)
 			BTreeValues[i] = -1;
 
 		//go to place after first 2 longs TEMP VALUE
-		file.seek(16);
+		file.seek(seekLocation);
 
 		//write all longs to data.bt
 		for (int i = 0; i < BTreeValues.length; i++)
@@ -99,6 +101,19 @@ public class BTreeManager {
 		if (initialNode.isFull())
 			System.out.println("Node is Full");
 		//TEMP
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//writes new node array to data.bt
+	//used when current node is full
+	public static void writeNewNode() throws IOException {
+
+		//goes to last place in data.bt
+		seekLocation = 16 + numNodes * 112; 
+
+		//write values
+		writeValuesToBTree(seekLocation);
 	}
 
 	//check if key already exists
