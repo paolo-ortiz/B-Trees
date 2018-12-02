@@ -12,6 +12,7 @@ public class BTreeManager {
 	static long[] BTreeValues = new long[14]; //TEMP
 
 	static ArrayList<BTreeNode> arrListOfBTreeNodes; //contains all node arrays
+	static ArrayList<long[]> arrListOfLongArrays; //contains all long[]
 
 	static BTreeNode initialNode; //TEMPORARY
 
@@ -41,22 +42,15 @@ public class BTreeManager {
 			file.seek(0);
 			numNodes = file.readLong();
 
-			//updates the values in node array
-			//first loop, goes through each element of array list
-			//second loop, goes through each element of node array
-			for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
+			//updates the values in each node array
+			for (int nodeNumber = 0; nodeNumber < arrListOfBTreeNodes.size(); nodeNumber++) {
 
-				for (int j = 0; j < BTreeValues.length; j++) {
+				//get the values in the node from data.bt
+				long[] temp = getNodeValues(arrListOfBTreeNodes.get(nodeNumber), nodeNumber);
 
-					seekLocation = (8 * (j + 2)) + (i * 112); //8*j+2 is for navigating node
-					file.seek(seekLocation); //reads all the values in BTree, minus header
-					BTreeValues[j] = file.readLong(); //updates values
+				//add values to long array list
+				arrListOfLongArrays.add(temp);
 
-
-				}	
-
-				//set i'th element in array list to btreevalues
-				//arrListOfBTreeNodes.set(i, BTreeValues);
 			}
 
 			//refresh values
@@ -90,6 +84,23 @@ public class BTreeManager {
 			//add initial node to array list
 			arrListOfBTreeNodes.add(initialNode);
 		}
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//reads node values from data.bt & puts it into array
+	//requires node to read files & nodeNumber to know where to seek
+	public static long[] getNodeValues(BTreeNode node, int nodeNumber) throws IOException {
+		
+		long[] temp = new long[14]; //create temp array
+
+		//updates the values in node array
+		for (int i = 0; i < temp.length; i++) {
+			file.seek(8 + (nodeNumber * 56)); //reads all the values in node
+			temp[i] = file.readLong(); //updates values
+		}
+
+		return temp;
 	}
 
 //-------------------------------------------------------------------------------------
