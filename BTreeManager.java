@@ -51,12 +51,12 @@ public class BTreeManager {
 				//add values to long array list
 				arrListOfLongArrays.add(temp);
 
+				//create node with the updated values
+				BTreeNode tempNode = new BTreeNode(temp);
+
+				//add node to array list
+				arrListOfBTreeNodes.add(tempNode);
 			}
-
-			//refresh values
-			this.initialNode = new BTreeNode(BTreeValues);
-
-			
 		}
 		//else if first time creating data.bt
 		else {
