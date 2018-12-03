@@ -5,6 +5,8 @@ public class BTreeNode {
 
 	static long[] nodeArray; //contains 14 long ints, which correspond to values
 
+//-------------------------------------------------------------------------------------
+
 	//Constructor
 	//requires long[] to update values in node
 	BTreeNode(long[] BTreeValues) {
@@ -17,6 +19,8 @@ public class BTreeNode {
 			nodeArray[i] = BTreeValues[i];
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//prints array, used for debug purposes
 	public static void printArray() {
 
@@ -24,6 +28,8 @@ public class BTreeNode {
 		for (int i = 0; i < nodeArray.length; i++)
 			System.out.println(nodeArray[i]);
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//inserts key & valueIndex into node array
 	//requires key & valueIndex, which will be inserted
@@ -50,6 +56,8 @@ public class BTreeNode {
 		}
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//checks if space is empty
 	public static boolean isEmpty(int index) {
 
@@ -59,6 +67,8 @@ public class BTreeNode {
 		else
 			return false;
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//checks if array contains 4 keys
 	public static boolean isFull() {
@@ -73,13 +83,15 @@ public class BTreeNode {
 		return true;
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//checks if key exists in node array
 	//requires key to be checked
 	public static boolean keyExists (long key) {
 
 		boolean exists = false;
 
-		//goes thru each key
+		//goes through each key
 		for (int i = 2; i < 14; i += 3) {
 
 			//checks if key is -1 and value index is -1
@@ -95,6 +107,25 @@ public class BTreeNode {
 
 		return exists;
 	}
+
+//-------------------------------------------------------------------------------------
+
+	//checks if key is less than any value in the node
+	//returns false if key is greater than all values
+	public static boolean keyFits(long key) {
+
+		//go through each key
+		for (int i = 2; i < 14; i += 3) {
+			//if key is less than any value, return true
+			if (key < nodeArray[i])
+				return true;
+		}
+
+		//else return false if key is greater than all values
+		return false;
+	}
+
+//-------------------------------------------------------------------------------------
 
 	//shifts all elements up from current index
 	//ex. if index of 1st key, shift from all elements from 1st key
@@ -128,6 +159,26 @@ public class BTreeNode {
 		
 	}
 
+//-------------------------------------------------------------------------------------
+
+	//returns last key of node
+	//used to keep key when shifting
+	public static long getLastKey() {
+
+		return nodeArray[11];
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//returns last value index of node
+	//used to keep key when shifting
+	public static long getLastValueIndex() {
+
+		return nodeArray[12];
+	}
+
+//-------------------------------------------------------------------------------------
+
 	//removes values in node array by replacing it with -1
 	//requires index so it knows what to remove
 	public static void removeValues(int index) {
@@ -136,11 +187,7 @@ public class BTreeNode {
 		nodeArray[index + 1] = -1;
 	}
 
-	//returns node so it can be written to data.bt
-	public static long[] returnNode (){
-		return nodeArray;
-	}
-
+//-------------------------------------------------------------------------------------
 
 	//returns node array
 	public static long[] getArray() {

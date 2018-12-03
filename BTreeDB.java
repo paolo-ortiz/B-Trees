@@ -16,9 +16,9 @@ public class BTreeDB {
 			Scanner sc = new Scanner(System.in);
 			
 			while (sc.hasNext()) {
-
+				
 				String input = sc.nextLine(); //get input
-
+				String value;
 				//for getting the inputs
 				Scanner rd = new Scanner(input);
 				String command = rd.next();
@@ -35,46 +35,45 @@ public class BTreeDB {
 				if (command.equals("insert")) {
 
 					long key = rd.nextLong();
-					String value = rd.nextLine().trim();
-
+					if(rd.hasNextLine() == true) {
+						
+					 value = rd.nextLine().trim();	//checks if there is any more input 
+					}
+					
+					else {
+						
+					 value = ""; 	//if no input is found, then a blank is added instead
+					}
+					
+	
 					//check if key already exists
 					boolean exists = btm.isPresent(key);
+
 					//if it does not exist, then insert
 					if (exists == false) {
+						int tempIndex = vm.getNumRecords();
+
 						insertToVal(value, vm);
-						insertToBT(key,index, btm);
+						insertToBT(key, tempIndex, btm);
 						System.out.printf("%d inserted\n", key);
-					} else 
+					}
+					//else if key already exists 
+					else 
 						System.out.printf("ERROR: %d already exists\n", key);	
-
-					
-
 				}
-
-				else if(command.equals("select")) {
+				else if (command.equals("select")) {
 
 					long key = rd.nextLong(); //gets key from command
 
 					int valueIndex = btm.getValueIndex(key); //get value index
 
 					select(key, valueIndex, vm);
-
 				}
-				else if (command.equals("update")) {
-					long key = rd.nextLong();	//gets key
-					int valueIndex = btm.getValueIndex(key); //gets index of what key is pointing to
-					String value = rd.nextLine().trim(); //the updated string 
-					
-					if(valueIndex != -1) {	//if there is a key, then it will update
-						vm.updateString(valueIndex, value);
-						System.out.printf("%d updated\n", key);	
-					}
-					
-					else 
-						System.out.printf("ERROR: %d does not exist\n", key);
-				
-					
+				//TEMP
+				else if (command.equals("new")) {
+					btm.writeNewNode();
 				}
+				//TEMP
 
 				//else if invalid command, print "invalid command"
 				else
@@ -86,15 +85,21 @@ public class BTreeDB {
 		}
 	}	
 
+//-------------------------------------------------------------------------------------
+
 	//inserts value into data.val
 	public static void insertToVal(String word, ValuesManager vm) throws IOException {
 		vm.insert(word);
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//inserts value into data.bt
 	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
 		btm.insertToNode(key,index);
 	}
+
+//-------------------------------------------------------------------------------------
 
 	public static void select(long key, int valueIndex, ValuesManager vm) throws IOException {
 

@@ -9,16 +9,19 @@ public class BTreeManager {
 	static long rootNodeIndex; //index of root node
 	static int valueIndex = 0; //index of where value is located in data.val
 
-	static long[] BTreeValues = new long[14]; //TEMP
+	static long[] initialBTreeValues = new long[14];
 
-	static BTreeNode initialNode; //TEMPORARY
+	static ArrayList<BTreeNode> arrListOfBTreeNodes; //contains all node arrays
+	static ArrayList<long[]> arrListOfLongArrays; //contains all long[]
+
+//-------------------------------------------------------------------------------------
 
 	//Constructor
 	//requires name of .bt file
 	BTreeManager(String name) throws IOException {
 
 		seekLocation = 0; //initial read position
-
+ 		
 		//creates temporary file
 		//when data files do not exist, then it creates one
 		File tempFile = new File(name);
@@ -30,14 +33,29 @@ public class BTreeManager {
 			//instantiate data.bt RAF
 			this.file = new RandomAccessFile(name, "rwd");
 
-			//updates the values in node array
-			for (int i = 0; i < BTreeValues.length; i++) {
-				file.seek(seekLocation + 8 * (i + 2)); //reads all the values in BTree, minus header
-				BTreeValues[i] = file.readLong(); //updates values
-			}	
+			//instantiate array list
+			arrListOfBTreeNodes = new ArrayList<BTreeNode>();
 
-			//refresh values
-			this.initialNode = new BTreeNode(BTreeValues);
+			//get number of nodes 
+			file.seek(0);
+			numNodes = file.readLong();
+
+			//updates the values in each node array
+			for (int nodeIndex = 0; nodeIndex < numNodes; nodeIndex++) {
+
+				file.seek(16 + nodeIndex*112); 
+
+				int move = 0; //temporary
+				for(int cursor = 0; cursor < 112; cursor += 8){
+					initialBTreeValues[move] = file.readLong(); 
+					move++;
+					
+				}
+
+				BTreeNode node = new BTreeNode(initialBTreeValues);
+
+				arrListOfBTreeNodes.add(node);
+			}
 		}
 		//else if first time creating data.bt
 		else {
@@ -53,68 +71,175 @@ public class BTreeManager {
 			file.writeLong(rootNodeIndex);
 
 			//write values to node
-			writeValuesToBTree();
+			//starts at 16 since it is the first node
+			writeValuesToBTree(16, initialBTreeValues);
 
 			//create inital node
-			this.initialNode = new BTreeNode(BTreeValues);
+			BTreeNode initialNode = new BTreeNode(initialBTreeValues);
+			long[] temp = getNodeValues(initialNode, 0);
+			
+			//instantiate array lists
+			arrListOfBTreeNodes = new ArrayList<BTreeNode>();
+			arrListOfLongArrays = new ArrayList<long[]>();
 
+			//add initial node to array list
+			arrListOfBTreeNodes.add(initialNode);
+
+			//add temp values to array list
+			arrListOfLongArrays.add(temp);
 		}
 	}
 
+//-------------------------------------------------------------------------------------
+
+	//reads node values from data.bt & puts it into array
+	//requires node to read files & nodeNumber to know where to seek
+	public static long[] getNodeValues(BTreeNode node, int nodeNumber) throws IOException {
+		
+		long[] temp = new long[14]; //create temp array
+
+		file.seek(8 + (nodeNumber * 56)); //reads all the values in node
+
+		//updates the values in node array
+		for (int i = 0; i < temp.length; i++) {
+			
+			temp[i] = file.readLong(); //updates values
+		}
+
+		return temp;
+	}
+
+//-------------------------------------------------------------------------------------
+
 	//used for initialization
 	//writes node array to data.bt
-	public static void writeValuesToBTree() throws IOException {
+	//requires starting location to know where to seek
+	public static void writeValuesToBTree(long seekLocation, long[] BTreeValues) throws IOException {
 
 		//create a size 14 array with -1s
 		for (int i = 0; i < BTreeValues.length; i++)
 			BTreeValues[i] = -1;
 
 		//go to place after first 2 longs TEMP VALUE
-		file.seek(16);
+		file.seek(seekLocation);
 
 		//write all longs to data.bt
 		for (int i = 0; i < BTreeValues.length; i++)
 			file.writeLong(BTreeValues[i]);
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//inserts node to node array & updates data.bt
 	//requires key & index, which will be written to data.bt
 	public static void insertToNode (long key, int index) throws IOException {
 		
-		initialNode.insertKey(key,valueIndex); //insert key & valueIndex into node array
+		//go through each node in arraylist
+		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
 
-		//seek to correct position SEEK POSITION IS TEMPORARY
-		file.seek(16);
+			BTreeNode currentNode = arrListOfBTreeNodes.get(i); //get node
+			boolean insertedWhenFull = false; //if values was inserted when node is already full, set to true 
+			long lastKey = 0, lastValueIndex = 0; //set temporary values
 
-		//get node array
-		long[] temp = initialNode.getArray();
+			//if node is full, save last values
+			if (currentNode.isFull()) {
+				lastKey = currentNode.getLastKey();
+				lastValueIndex = currentNode.getLastValueIndex();
+				insertedWhenFull = true;
+			}
 
-		//write array to file
-		for (int i = 0; i < temp.length; i++)
-			file.writeLong(temp[i]);
-		
-		valueIndex++; //increment valueIndex
+			//insert key & valueIndex into node array
+			currentNode.insertKey(key, index);
 
-		//TEMP
-		if (initialNode.isFull())
-			System.out.println("Node is Full");
-		//TEMP
+			//get node array
+			long[] temp = currentNode.getArray();
+
+			//write array to file
+			for (int j = 0; j < temp.length; j++) {
+				file.seek(8 * (j + 2));
+				file.writeLong(temp[j]);
+			}
+	
+			valueIndex++; //increment valueIndex
+
+			if (insertedWhenFull) 
+				splitRootNode(currentNode, lastKey, lastValueIndex);
+		}
 	}
+
+//-------------------------------------------------------------------------------------
+
+	public static void splitNode() {
+
+		//get last value in node
+
+		//insert key in node
+
+		//create 2 new nodes
+
+		//push middle to parent node
+
+		//push to other nodes
+
+		//add nodes to arraylist
+
+		//
+	}
+
+//-------------------------------------------------------------------------------------
+
+	public static void splitRootNode(BTreeNode node, long lastKey, long lastValueIndex) {
+
+		//get node values
+		long[] tempBTreeValues = node.getArray();
+
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//writes new node array to data.bt
+	//used when current node is full
+	public static void writeNewNode() throws IOException {
+
+		//goes to last place in data.bt
+		seekLocation = 16 + numNodes * 112; 
+
+		//write values
+		writeValuesToBTree(seekLocation, initialBTreeValues);
+
+		//update number of nodes
+		incrementNodes();
+	}
+
+//-------------------------------------------------------------------------------------	
 
 	//check if key already exists
 	//requires key to check if is present;
 	public static boolean isPresent(long key) {
 
-		//checks if key is in node
-		boolean exists = initialNode.keyExists(key);
+		//go through each node & check if key is in node
+		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
 
-		return exists;
+			BTreeNode tempNode = arrListOfBTreeNodes.get(i); //gets node
+			boolean exists = tempNode.keyExists(key); //check if key exists in node
+
+			//if key exists, return true
+			if (exists)
+				return true;
+		}
+
+		//else if key is not found, return false
+		return false;
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//closes data.bt properly when program is closed
 	public static void closeData() throws IOException {
 		file.close();
 	}
+
+//-------------------------------------------------------------------------------------
 
 	//returns value index of key
 	//requires key to get value index
@@ -122,40 +247,55 @@ public class BTreeManager {
 
 		int tempIndex = 2;
 
-		//go thru the 4 keys
-		for(int seekLocation = 32; seekLocation < 128; seekLocation += 8) {
-			file.seek(seekLocation); //seeks key
+		//go through each node in array list
+		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
 
-			//TODO: FIX -1
+			BTreeNode tempNode = arrListOfBTreeNodes.get(i);
 
-			//if key is -1
-			if (key == -1 && file.readLong() == key) {
-				if (!(initialNode.isEmpty(tempIndex))) {
+			//go through the 4 keys
+			for(int seekLocation = 32; seekLocation < 128; seekLocation += 8) {
+				file.seek(seekLocation); //seeks key
+
+				//TODO: FIX -1
+
+				//if key is -1
+				if (key == -1 && file.readLong() == key) {
+					if (!(tempNode.isEmpty(tempIndex))) {
+						file.seek(seekLocation + 8); //gets the value index
+						long tempValIndex = file.readLong();
+
+						System.out.println(tempValIndex);
+						return Math.toIntExact(tempValIndex); //convert to int before returning
+					}
+				}
+
+				//if key matches
+				if (file.readLong() == key) {
 					file.seek(seekLocation + 8); //gets the value index
 					long tempValIndex = file.readLong();
 
-					System.out.println(tempValIndex);
 					return Math.toIntExact(tempValIndex); //convert to int before returning
+
+				
 				}
+
+				tempIndex += 3;
+
 			}
-
-			//if key matches
-			if (file.readLong() == key) {
-				file.seek(seekLocation + 8); //gets the value index
-				long tempValIndex = file.readLong();
-
-				return Math.toIntExact(tempValIndex); //convert to int before returning
-
-			
-			}
-
-			tempIndex += 3;
-
 		}
-
 		return -1;
 			
 	}
 
+//-------------------------------------------------------------------------------------
 
+	//increments number of records & updates data.bt
+	public static void incrementNodes() throws IOException {
+
+		numNodes++; //increment number of nodes
+		file.seek(0); //go to start of data.bt, where number of nodes is stored
+
+		//updates records at data.bt
+		file.writeLong(numNodes);
+	}	
 }
