@@ -80,8 +80,9 @@ public class BTreeManager {
 			BTreeNode initialNode = new BTreeNode(initialBTreeValues);
 			long[] temp = getNodeValues(initialNode, 0);
 			
-			//instantiate array list
+			//instantiate array lists
 			arrListOfBTreeNodes = new ArrayList<BTreeNode>();
+			arrListOfLongArrays = new ArrayList<long[]>();
 
 			//add initial node to array list
 			arrListOfBTreeNodes.add(initialNode);
@@ -99,9 +100,11 @@ public class BTreeManager {
 		
 		long[] temp = new long[14]; //create temp array
 
+		file.seek(8 + (nodeNumber * 56)); //reads all the values in node
+
 		//updates the values in node array
 		for (int i = 0; i < temp.length; i++) {
-			file.seek(8 + (nodeNumber * 56)); //reads all the values in node
+			
 			temp[i] = file.readLong(); //updates values
 		}
 
@@ -131,26 +134,45 @@ public class BTreeManager {
 
 	//inserts node to node array & updates data.bt
 	//requires key & index, which will be written to data.bt
-	public static void insertToNode (long key, int index, BTreeNode node) throws IOException {
+	public static void insertToNode (long key, int index) throws IOException {
+
+		System.out.println("METHOD STARTED"); //TEMP
 		
-		node.insertKey(key,valueIndex); //insert key & valueIndex into node array
+		//go through each node in arraylist
+		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
 
-		//seek to correct position SEEK POSITION IS TEMPORARY
-		file.seek(16);
+			System.out.println("ARRAYLIST"); //TEMP
 
-		//get node array
-		long[] temp = node.getArray();
+			BTreeNode tempNode = arrListOfBTreeNodes.get(i);
 
-		//write array to file
-		for (int i = 0; i < temp.length; i++)
-			file.writeLong(temp[i]);
+			//if node is greater than all elements in node, go to next
+			//keyFits checks if key is less than any value in node
+			// if (tempNode.keyFits(key)) {
+
+				System.out.println("KEY FITS"); //TEMP
+
+				//insert key & valueIndex into node array
+				tempNode.insertKey(key, valueIndex);
+
+				//get node array
+				long[] temp = tempNode.getArray();
+
+				//write array to file
+				for (int j = 0; j < temp.length; j++) {
+					System.out.println("LOOP"); //TEMP
+					file.seek(8 * (j + 2));
+					file.writeLong(temp[j]);
+				}
 		
-		valueIndex++; //increment valueIndex
+				valueIndex++; //increment valueIndex
 
-		//TEMP
-		if (node.isFull())
-			System.out.println("Node is Full");
-		//TEMP
+				//TEMP
+				if (tempNode.isFull())
+					System.out.println("Node is Full");
+				//TEMP
+			// }
+			
+		}
 	}
 
 //-------------------------------------------------------------------------------------

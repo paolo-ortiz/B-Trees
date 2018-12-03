@@ -91,7 +91,7 @@ public class BTreeNode {
 
 		boolean exists = false;
 
-		//goes thru each key
+		//goes through each key
 		for (int i = 2; i < 14; i += 3) {
 
 			//checks if key is -1 and value index is -1
@@ -106,6 +106,23 @@ public class BTreeNode {
 		}
 
 		return exists;
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//checks if key is less than any value in the node
+	//returns false if key is greater than all values
+	public static boolean keyFits(long key) {
+
+		//go through each key
+		for (int i = 2; i < 14; i += 3) {
+			//if key is less than any value, return true
+			if (key < nodeArray[i])
+				return true;
+		}
+
+		//else return false if key is greater than all values
+		return false;
 	}
 
 //-------------------------------------------------------------------------------------
@@ -140,6 +157,15 @@ public class BTreeNode {
 
 		}
 		
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//returns last key of node
+	//used to keep key when shifting
+	public static long getLastKey() {
+
+		return 1;
 	}
 
 //-------------------------------------------------------------------------------------
