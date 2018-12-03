@@ -39,6 +39,7 @@ public class BTreeDB {
 
 					//check if key already exists
 					boolean exists = btm.isPresent(key);
+
 					//if it does not exist, then insert
 					if (exists == false) {
 						int tempIndex = vm.getNumRecords();
@@ -46,7 +47,9 @@ public class BTreeDB {
 						insertToVal(value, vm);
 						insertToBT(key, tempIndex, btm);
 						System.out.printf("%d inserted\n", key);
-					} else 
+					}
+					//else if key already exists 
+					else 
 						System.out.printf("ERROR: %d already exists\n", key);	
 				}
 				else if (command.equals("select")) {

@@ -162,7 +162,7 @@ public class BTreeManager {
 			// if (tempNode.keyFits(key)) {
 
 				//insert key & valueIndex into node array
-				tempNode.insertKey(key, valueIndex);
+				tempNode.insertKey(key, index);
 
 				//get node array
 				long[] temp = tempNode.getArray();
@@ -174,11 +174,6 @@ public class BTreeManager {
 				}
 		
 				valueIndex++; //increment valueIndex
-
-				//TEMP
-				if (tempNode.isFull())
-					System.out.println("Node is Full");
-				//TEMP
 			// }
 			
 		}
