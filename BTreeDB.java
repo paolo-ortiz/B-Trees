@@ -41,8 +41,10 @@ public class BTreeDB {
 					boolean exists = btm.isPresent(key);
 					//if it does not exist, then insert
 					if (exists == false) {
+						int tempIndex = vm.getNumRecords();
+
 						insertToVal(value, vm);
-						insertToBT(key,index, btm);
+						insertToBT(key, tempIndex, btm);
 						System.out.printf("%d inserted\n", key);
 					} else 
 						System.out.printf("ERROR: %d already exists\n", key);	

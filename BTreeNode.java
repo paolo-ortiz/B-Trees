@@ -19,6 +19,12 @@ public class BTreeNode {
 			nodeArray[i] = BTreeValues[i];
 	}
 
+	//Constructor for new node
+	//BTreeNode() {
+
+		//this.nodeArray = new long[14];
+	//}
+
 //-------------------------------------------------------------------------------------
 
 	//prints array, used for debug purposes

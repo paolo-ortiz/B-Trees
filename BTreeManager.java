@@ -39,24 +39,40 @@ public class BTreeManager {
 			//instantiate array list
 			arrListOfBTreeNodes = new ArrayList<BTreeNode>();
 
-			//get number of nodes
+			//get number of nodes 
 			file.seek(0);
 			numNodes = file.readLong();
 
 			//updates the values in each node array
-			for (int nodeNumber = 0; nodeNumber < arrListOfBTreeNodes.size(); nodeNumber++) {
+			for (int nodeIndex = 0; nodeIndex < numNodes; nodeIndex++) {
 
-				//get the values in the node from data.bt
-				long[] temp = getNodeValues(arrListOfBTreeNodes.get(nodeNumber), nodeNumber);
+				file.seek(16 + nodeIndex*112); 
 
-				//add values to long array list
-				arrListOfLongArrays.add(temp);
+				//temporary
+				int move =0;
+				for(int cursor = 0; cursor < 112 ;cursor+=8){
+					initialBTreeValues[move] = file.readLong() ; 
+					move++;
+					
+				}
 
-				//create node with the updated values
-				BTreeNode tempNode = new BTreeNode(temp);
+				BTreeNode node = new BTreeNode(initialBTreeValues);
 
-				//add node to array list
-				arrListOfBTreeNodes.add(tempNode);
+				arrListOfBTreeNodes.add(node);
+			// 	System.out.println("HELLO");
+
+			// 	//get the values in the node from data.bt
+			// 	long[] temp = getNodeValues(arrListOfBTreeNodes.get(nodeIndex), nodeIndex);
+
+			// 	//add values to long array list
+			// 	arrListOfLongArrays.add(temp);
+
+			// 	//create node with the updated values
+			// 	BTreeNode tempNode = new BTreeNode(temp);
+
+			// 	//add node to array list
+			// 	arrListOfBTreeNodes.add(tempNode);
+			// }
 			}
 		}
 		//else if first time creating data.bt
@@ -135,21 +151,15 @@ public class BTreeManager {
 	//inserts node to node array & updates data.bt
 	//requires key & index, which will be written to data.bt
 	public static void insertToNode (long key, int index) throws IOException {
-
-		System.out.println("METHOD STARTED"); //TEMP
 		
 		//go through each node in arraylist
 		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
-
-			System.out.println("ARRAYLIST"); //TEMP
 
 			BTreeNode tempNode = arrListOfBTreeNodes.get(i);
 
 			//if node is greater than all elements in node, go to next
 			//keyFits checks if key is less than any value in node
 			// if (tempNode.keyFits(key)) {
-
-				System.out.println("KEY FITS"); //TEMP
 
 				//insert key & valueIndex into node array
 				tempNode.insertKey(key, valueIndex);
@@ -159,7 +169,6 @@ public class BTreeManager {
 
 				//write array to file
 				for (int j = 0; j < temp.length; j++) {
-					System.out.println("LOOP"); //TEMP
 					file.seek(8 * (j + 2));
 					file.writeLong(temp[j]);
 				}
@@ -173,6 +182,36 @@ public class BTreeManager {
 			// }
 			
 		}
+	}
+
+//-------------------------------------------------------------------------------------
+
+	public static void splitNode() {
+
+		//get last value in node
+
+		//insert key in node
+
+		//create 2 new nodes
+
+		//push middle to parent node
+
+		//push to other nodes
+
+		//add nodes to arraylist
+
+		//
+	}
+
+//-------------------------------------------------------------------------------------
+
+	public static void splitParentNode() {
+
+		//get last value in node
+
+		//insert key in node
+
+		//
 	}
 
 //-------------------------------------------------------------------------------------
