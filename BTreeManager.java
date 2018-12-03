@@ -9,13 +9,10 @@ public class BTreeManager {
 	static long rootNodeIndex; //index of root node
 	static int valueIndex = 0; //index of where value is located in data.val
 
-	//static long[] BTreeValues = new long[14]; //TEMP
 	static long[] initialBTreeValues = new long[14];
 
 	static ArrayList<BTreeNode> arrListOfBTreeNodes; //contains all node arrays
 	static ArrayList<long[]> arrListOfLongArrays; //contains all long[]
-
-	//static BTreeNode initialNode; //TEMPORARY
 
 //-------------------------------------------------------------------------------------
 
@@ -48,10 +45,9 @@ public class BTreeManager {
 
 				file.seek(16 + nodeIndex*112); 
 
-				//temporary
-				int move =0;
-				for(int cursor = 0; cursor < 112 ;cursor+=8){
-					initialBTreeValues[move] = file.readLong() ; 
+				int move = 0; //temporary
+				for(int cursor = 0; cursor < 112; cursor += 8){
+					initialBTreeValues[move] = file.readLong(); 
 					move++;
 					
 				}
@@ -59,20 +55,6 @@ public class BTreeManager {
 				BTreeNode node = new BTreeNode(initialBTreeValues);
 
 				arrListOfBTreeNodes.add(node);
-			// 	System.out.println("HELLO");
-
-			// 	//get the values in the node from data.bt
-			// 	long[] temp = getNodeValues(arrListOfBTreeNodes.get(nodeIndex), nodeIndex);
-
-			// 	//add values to long array list
-			// 	arrListOfLongArrays.add(temp);
-
-			// 	//create node with the updated values
-			// 	BTreeNode tempNode = new BTreeNode(temp);
-
-			// 	//add node to array list
-			// 	arrListOfBTreeNodes.add(tempNode);
-			// }
 			}
 		}
 		//else if first time creating data.bt
@@ -155,27 +137,33 @@ public class BTreeManager {
 		//go through each node in arraylist
 		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
 
-			BTreeNode tempNode = arrListOfBTreeNodes.get(i);
+			BTreeNode currentNode = arrListOfBTreeNodes.get(i); //get node
+			boolean insertedWhenFull = false; //if values was inserted when node is already full, set to true 
+			long lastKey = 0, lastValueIndex = 0; //set temporary values
 
-			//if node is greater than all elements in node, go to next
-			//keyFits checks if key is less than any value in node
-			// if (tempNode.keyFits(key)) {
+			//if node is full, save last values
+			if (currentNode.isFull()) {
+				lastKey = currentNode.getLastKey();
+				lastValueIndex = currentNode.getLastValueIndex();
+				insertedWhenFull = true;
+			}
 
-				//insert key & valueIndex into node array
-				tempNode.insertKey(key, index);
+			//insert key & valueIndex into node array
+			currentNode.insertKey(key, index);
 
-				//get node array
-				long[] temp = tempNode.getArray();
+			//get node array
+			long[] temp = currentNode.getArray();
 
-				//write array to file
-				for (int j = 0; j < temp.length; j++) {
-					file.seek(8 * (j + 2));
-					file.writeLong(temp[j]);
-				}
-		
-				valueIndex++; //increment valueIndex
-			// }
-			
+			//write array to file
+			for (int j = 0; j < temp.length; j++) {
+				file.seek(8 * (j + 2));
+				file.writeLong(temp[j]);
+			}
+	
+			valueIndex++; //increment valueIndex
+
+			if (insertedWhenFull) 
+				splitRootNode(currentNode, lastKey, lastValueIndex);
 		}
 	}
 
@@ -200,13 +188,11 @@ public class BTreeManager {
 
 //-------------------------------------------------------------------------------------
 
-	public static void splitParentNode() {
+	public static void splitRootNode(BTreeNode node, long lastKey, long lastValueIndex) {
 
-		//get last value in node
+		//get node values
+		long[] tempBTreeValues = node.getArray();
 
-		//insert key in node
-
-		//
 	}
 
 //-------------------------------------------------------------------------------------

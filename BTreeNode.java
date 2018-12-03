@@ -19,12 +19,6 @@ public class BTreeNode {
 			nodeArray[i] = BTreeValues[i];
 	}
 
-	//Constructor for new node
-	//BTreeNode() {
-
-		//this.nodeArray = new long[14];
-	//}
-
 //-------------------------------------------------------------------------------------
 
 	//prints array, used for debug purposes
@@ -171,7 +165,16 @@ public class BTreeNode {
 	//used to keep key when shifting
 	public static long getLastKey() {
 
-		return 1;
+		return nodeArray[11];
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//returns last value index of node
+	//used to keep key when shifting
+	public static long getLastValueIndex() {
+
+		return nodeArray[12];
 	}
 
 //-------------------------------------------------------------------------------------
@@ -182,13 +185,6 @@ public class BTreeNode {
 
 		nodeArray[index] = -1;
 		nodeArray[index + 1] = -1;
-	}
-
-//-------------------------------------------------------------------------------------
-
-	//returns node so it can be written to data.bt
-	public static long[] returnNode (){
-		return nodeArray;
 	}
 
 //-------------------------------------------------------------------------------------
