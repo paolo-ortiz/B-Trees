@@ -35,7 +35,14 @@ public class BTreeDB {
 				if (command.equals("insert")) {
 
 					long key = rd.nextLong();
-					String value = rd.nextLine().trim();
+					String value;
+
+					//check if there is any more input
+					if (rd.hasNextLine())
+						value = rd.nextLine().trim();
+					//if no input is found, then blank is added
+					else
+						value = "";
 
 					//check if key already exists
 					boolean exists = btm.isPresent(key);

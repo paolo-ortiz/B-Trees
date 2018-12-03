@@ -154,6 +154,9 @@ public class BTreeManager {
 			//get node array
 			long[] temp = currentNode.getArray();
 
+			if (insertedWhenFull) 
+				splitRootNode(currentNode, lastKey, lastValueIndex);
+
 			//write array to file
 			for (int j = 0; j < temp.length; j++) {
 				file.seek(8 * (j + 2));
@@ -162,8 +165,7 @@ public class BTreeManager {
 	
 			valueIndex++; //increment valueIndex
 
-			if (insertedWhenFull) 
-				splitRootNode(currentNode, lastKey, lastValueIndex);
+			
 		}
 	}
 
@@ -228,7 +230,12 @@ public class BTreeManager {
 		}
 
 		writeNewNode(leftChildValues);
+		BTreeNode leftChild = new BTreeNode(leftChildValues);
+		arrListOfBTreeNodes.add(leftChild);
+
 		writeNewNode(rightChildValues);
+		BTreeNode rightChild = new BTreeNode(rightChildValues);
+		arrListOfBTreeNodes.add(rightChild);
 
 	}
 
@@ -243,14 +250,26 @@ public class BTreeManager {
 		seekLocation = 16 + numNodes * 112; 
 
 		//write values
-		writeValuesToBTree(seekLocation, initialBTreeValues);
+		writeArrayToBTree(seekLocation, BTreeValues);
 
 		//update number of nodes
 		incrementNodes();
 
-		//add new node to array list
-		BTreeNode tempNode = new BTreeNode(BTreeValues);
-		arrListOfBTreeNodes.add(tempNode);
+		// //add new node to array list
+		// BTreeNode tempNode = new BTreeNode(BTreeValues);
+		// arrListOfBTreeNodes.add(tempNode);
+	}
+
+//-------------------------------------------------------------------------------------
+
+	public static void writeArrayToBTree(long seekLocation, long[] BTreeValues) throws IOException {
+
+		//go to place after first 2 longs TEMP VALUE
+		file.seek(seekLocation);
+
+		//write all longs to data.bt
+		for (int i = 0; i < BTreeValues.length; i++)
+			file.writeLong(BTreeValues[i]);
 	}
 
 //-------------------------------------------------------------------------------------	
