@@ -188,10 +188,47 @@ public class BTreeManager {
 
 //-------------------------------------------------------------------------------------
 
-	public static void splitRootNode(BTreeNode node, long lastKey, long lastValueIndex) {
+	public static void splitRootNode(BTreeNode node, long lastKey, long lastValueIndex) throws IOException {
+
+		System.out.println("SPLIT");
 
 		//get node values
 		long[] tempBTreeValues = node.getArray();
+
+		//put left 2 values in a new node
+		long[] leftChildValues = new long[14];
+		for (int i = 0; i < 14; i++) {
+
+			if (i == 2) { //if at 1st key
+				leftChildValues[i] = tempBTreeValues[i]; //set key
+				leftChildValues[i + 1] = tempBTreeValues[i + 1]; //set value index
+
+			} else if (i == 5) { //if at 2nd key
+				leftChildValues[i] = tempBTreeValues[i]; //set key
+				leftChildValues[i + 1] = tempBTreeValues[i + 2]; //set value index
+
+			} else if (i != 3 || i != 6) //if value is not pointing to 1st 2 value indexes
+				leftChildValues[i] = -1;
+		}
+
+		//put right 2 values in new node
+		long[] rightChildValues = new long[14];
+		for (int i = 0; i < 14; i++) {
+
+			if (i == 8) { //if at 3rd key
+				rightChildValues[i] = tempBTreeValues[i]; //set key
+				rightChildValues[i + 1] = tempBTreeValues[i + 1]; //set value index
+
+			} else if (i == 11) { //if at 4th key
+				rightChildValues[i] = lastKey; //set key
+				rightChildValues[i + 1] = lastValueIndex; //set value index
+
+			} else if (i != 9 || i != 12) //if value is not pointing to last 2 value indexes
+				rightChildValues[i] = -1;
+		}
+
+		writeNewNode(leftChildValues);
+		writeNewNode(rightChildValues);
 
 	}
 
@@ -199,7 +236,8 @@ public class BTreeManager {
 
 	//writes new node array to data.bt
 	//used when current node is full
-	public static void writeNewNode() throws IOException {
+	//requires long[], which will be written
+	public static void writeNewNode(long[] BTreeValues) throws IOException {
 
 		//goes to last place in data.bt
 		seekLocation = 16 + numNodes * 112; 
@@ -209,6 +247,10 @@ public class BTreeManager {
 
 		//update number of nodes
 		incrementNodes();
+
+		//add new node to array list
+		BTreeNode tempNode = new BTreeNode(BTreeValues);
+		arrListOfBTreeNodes.add(tempNode);
 	}
 
 //-------------------------------------------------------------------------------------	

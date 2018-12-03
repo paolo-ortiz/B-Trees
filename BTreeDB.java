@@ -60,11 +60,6 @@ public class BTreeDB {
 
 					select(key, valueIndex, vm);
 				}
-				//TEMP
-				else if (command.equals("new")) {
-					btm.writeNewNode();
-				}
-				//TEMP
 
 				//else if invalid command, print "invalid command"
 				else
