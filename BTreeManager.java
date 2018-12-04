@@ -134,59 +134,143 @@ public class BTreeManager {
 
 //-------------------------------------------------------------------------------------
 
-	//inserts node to node array & updates data.bt
-	//requires key & index, which will be written to data.bt
-	public static void insertToNode (long key, int index) throws IOException {
+	// //inserts node to node array & updates data.bt
+	// //requires key & index, which will be written to data.bt
+	// public static void insertToNodee (long key, int index) throws IOException {
 		
-		//go through each node in arraylist
-		for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
+	// 	//go through each node in arraylist
+	// 	for (int i = 0; i < arrListOfBTreeNodes.size(); i++) {
 
-			BTreeNode currentNode = arrListOfBTreeNodes.get(i); //get node
-			boolean insertedWhenFull = false; //if values was inserted when node is already full, set to true 
-			long lastKey = 0, lastValueIndex = 0; //set temporary values
+	// 		BTreeNode currentNode = arrListOfBTreeNodes.get(i); //get node
+	// 		boolean insertedWhenFull = false; //if values was inserted when node is already full, set to true 
+	// 		long lastKey = 0, lastValueIndex = 0; //set temporary values
 
-			//if trying to insert, but has no child node
+	// 		//if trying to insert, but has no child node
 
-			//if node is full, save last values
-			if (currentNode.isFull()) {
+	// 		//if node is full, save last values
+	// 		if (currentNode.isFull()) {
+
+	// 			//if key is greater than all values in node
+	// 			if (currentNode.keyIsGreatestValue(key)) {
+	// 				lastKey = key;
+	// 				lastValueIndex = index;
+	// 			} else {
+
+	// 				lastKey = currentNode.getLastKey();
+	// 				lastValueIndex = currentNode.getLastValueIndex();
+	// 			}
+	// 			insertedWhenFull = true;
+	// 		}
+
+	// 		//insert key & valueIndex into node array
+	// 		currentNode.insertKey(key, index);
+
+	// 		//get node array
+	// 		long[] temp = currentNode.getArray();
+	
+	// 		valueIndex++; //increment valueIndex
+
+	// 		if (insertedWhenFull) 
+	// 			splitRootNode(currentNode, lastKey, lastValueIndex);
+	// 		else {
+
+	// 			// //write array to file
+	// 			// for (int j = 0; j < temp.length; j++) {
+	// 			// 	file.seek(8 * (j + 2));
+	// 			// 	file.writeLong(temp[j]);
+	// 			// }
+	// 			seekLocation = 16 + i * 112;
+	// 			//writeArrayToBTree(seekLocation, temp);
+	// 		}
+
+			
+	// 	}
+
+	// 	//start at root node
+	// }
+
+	public static void insertToNode2(long key, int index, long nodeIndex) throws IOException {
+
+		//1st run starts at root node
+		BTreeNode currentNode = arrListOfBTreeNodes.get(Math.toIntExact(nodeIndex)); //convert long to int
+		long[] currentValues = currentNode.getArray();
+		boolean insertedWhenFull = false; //if values was inserted when node is already full, set to true 
+		long lastKey = 0, lastValueIndex = 0; //set temporary values
+
+		//if current node is already full, save last values
+		if (currentNode.isFull()) {
 
 				//if key is greater than all values in node
 				if (currentNode.keyIsGreatestValue(key)) {
 					lastKey = key;
 					lastValueIndex = index;
 				} else {
-
 					lastKey = currentNode.getLastKey();
 					lastValueIndex = currentNode.getLastValueIndex();
 				}
 				insertedWhenFull = true;
-			}
-
-			//insert key & valueIndex into node array
-			currentNode.insertKey(key, index);
-
-			//get node array
-			long[] temp = currentNode.getArray();
-	
-			valueIndex++; //increment valueIndex
-
-			if (insertedWhenFull) 
-				splitRootNode(currentNode, lastKey, lastValueIndex);
-			else {
-
-				// //write array to file
-				// for (int j = 0; j < temp.length; j++) {
-				// 	file.seek(8 * (j + 2));
-				// 	file.writeLong(temp[j]);
-				// }
-				seekLocation = 16 + i * 112;
-				//writeArrayToBTree(seekLocation, temp);
-			}
-
-			
 		}
-	}
 
+		//if key to be inserted is less than 1st key in node
+		if (key < currentValues[2]) {
+
+			//if there is no child, insert key in node
+			if (currentValues[1] == -1)
+				currentNode.insertKey(key, index);
+			//else go to child node
+			else
+				insertToNode2(key, index, currentValues[1]);
+		}
+
+		//else if key to be inserted is greater than 1st key
+		else if (key > currentValues[2] && key < currentValues[5]) {
+
+			//if there is no child, insert key in node
+			if (currentValues[4] == -1)
+				currentNode.insertKey(key, index);
+			//else go to child node
+			else
+				insertToNode2(key, index, currentValues[4]);
+		}
+
+		//else if key to be inserted is greater than 2nd key
+		else if (key > currentValues[5] && key < currentValues[8]) {
+
+			//if there is no child, insert key in node
+			if (currentValues[7] == -1)
+				currentNode.insertKey(key, index);
+			//else go to child node
+			else
+				insertToNode2(key, index, currentValues[7]);
+		}
+
+		//else if key to be inserted is greater than 3rd key
+		else if (key > currentValues[8] && key < currentValues[11]) {
+
+			//if there is no child, insert key in node
+			if (currentValues[10] == -1)
+				currentNode.insertKey(key, index);
+			//else go to child node
+			else
+				insertToNode2(key, index, currentValues[10]);
+		}
+
+		//else if key to be inserted is greater than 4th key
+		else if (key > currentValues[11]) {
+
+			//if there is no child, insert key in node
+			if (currentValues[13] == -1)
+				currentNode.insertKey(key, index);
+			//else go to child node
+			else
+				insertToNode2(key, index, currentValues[13]);
+		}
+
+		valueIndex++; //increment valueIndex
+
+		if (insertedWhenFull) 
+			splitRootNode(currentNode, lastKey, lastValueIndex);
+	}
 //-------------------------------------------------------------------------------------
 
 	public static void splitNode() {
@@ -213,9 +297,6 @@ public class BTreeManager {
 		//get node values
 		long[] tempBTreeValues = node.getArray();
 
-		System.out.printf("LAST KEY: %d\nLAST VALUE INDEX: %d\n", lastKey, lastValueIndex);
-
-
 		//put left 2 values in a new node
 		long[] leftChildValues = new long[14];
 		for (int i = 0; i < 14; i++) {
@@ -231,9 +312,10 @@ public class BTreeManager {
 			} else if (i == 3 || i == 6) 
 				continue;
 			else
-				leftChildValues[i] = -1;
-			
+				leftChildValues[i] = -1;		
 		}
+		//set parent of left child TEMP VALUE
+		leftChildValues[0] = 2;
 		
 		//put right 2 values in new node
 		long[] rightChildValues = new long[14];
@@ -251,8 +333,9 @@ public class BTreeManager {
 				continue;
 			else
 				rightChildValues[i] = -1;
-
 		}
+		//set parent of right child TEMP VALUE
+		rightChildValues[0] = 2;
 
 		//put middle value into root node
 		long[] root = new long[14];
@@ -265,14 +348,16 @@ public class BTreeManager {
 			} else if (i != 3)
 				root[i] = -1;
 		}
-
-	 	// for (int i =0; i < 14; i++){
-	  //   	System.out.println(rightChildValues[i]);
-	  //   }
+		//set children of root node TEMP VALUE
+		root[1] = 0;
+		root[4] = 1;
 		
 	    overwriteNode(0, leftChildValues); //node 0 gets left children //overwriting everything
 	    writeNewNode(rightChildValues); //node 1 gets right children
 	    writeNewNode(root); //node 2 gets middle value
+
+	    //update root node index
+	    updateRootNodeIndex(2);
 	    
 	}
 
@@ -351,13 +436,6 @@ public class BTreeManager {
 
 //-------------------------------------------------------------------------------------
 
-	//closes data.bt properly when program is closed
-	public static void closeData() throws IOException {
-		file.close();
-	}
-
-//-------------------------------------------------------------------------------------
-
 	//returns value index of key
 	//requires key to get value index
 	public static int getValueIndex(long key) throws IOException {
@@ -415,4 +493,33 @@ public class BTreeManager {
 		//updates records at data.bt
 		file.writeLong(numNodes);
 	}	
+
+//-------------------------------------------------------------------------------------
+
+	//return root node index
+	public static long getRootNodeIndex() throws IOException {
+
+		file.seek(8);
+		return file.readLong();
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//updates root node index in data.bt
+	//hardcoded for now
+	public static void updateRootNodeIndex(long newRootNodeIndex) throws IOException {
+
+		rootNodeIndex = newRootNodeIndex; //get new root node
+		file.seek(8); //go to where root node index is stored
+
+		//update root node index
+		file.writeLong(rootNodeIndex);
+	}
+
+//-------------------------------------------------------------------------------------
+
+	//closes data.bt properly when program is closed
+	public static void closeData() throws IOException {
+		file.close();
+	} 
 }

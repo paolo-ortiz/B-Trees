@@ -89,7 +89,10 @@ public class BTreeDB {
 
 	//inserts value into data.bt
 	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
-		btm.insertToNode(key,index);
+		//get root node index
+		long rni = btm.getRootNodeIndex();
+
+		btm.insertToNode2(key,index, rni);
 	}
 
 //-------------------------------------------------------------------------------------
