@@ -161,16 +161,20 @@ public class BTreeManager {
 			long[] temp = currentNode.getArray();
 
 
-			//write array to file
-			for (int j = 0; j < temp.length; j++) {
-				file.seek(8 * (j + 2));
-				file.writeLong(temp[j]);
-			}
+			
 	
 			valueIndex++; //increment valueIndex
 
 			if (insertedWhenFull) 
 				splitRootNode(currentNode, lastKey, lastValueIndex);
+			else {
+
+				//write array to file
+				for (int j = 0; j < temp.length; j++) {
+					file.seek(8 * (j + 2));
+					file.writeLong(temp[j]);
+				}
+			}
 
 			
 		}
@@ -204,41 +208,45 @@ public class BTreeManager {
 		//get node values
 		long[] tempBTreeValues = node.getArray();
 
-		// for (int i = 0; i < 14; i++)
-		// 	System.out.println(tempBTreeValues[i]);
-
 		//put left 2 values in a new node
 		long[] leftChildValues = new long[14];
 		for (int i = 0; i < 14; i++) {
 
 			if (i == 2) { //if at 1st key
-				leftChildValues[i] = tempBTreeValues[2]; //set key
-				leftChildValues[i + 1] = tempBTreeValues[3]; //set value index
+				leftChildValues[2] = tempBTreeValues[2]; //set key
+				leftChildValues[3] = tempBTreeValues[3]; //set value index
 
 			} else if (i == 5) { //if at 2nd key
-				leftChildValues[i] = tempBTreeValues[5]; //set key
-				leftChildValues[i + 1] = tempBTreeValues[6]; //set value index
+				leftChildValues[5] = tempBTreeValues[5]; //set key
+				leftChildValues[6] = tempBTreeValues[6]; //set value index
 
-			} else if (i != 3 || i != 6) //if value is not pointing to 1st 2 value indexes
+			} else if (i == 3 || i == 6) 
+				continue;
+			else
 				leftChildValues[i] = -1;
+			
 		}
 		
-
+		for (int i = 0; i < 14; i++)
+			System.out.println(leftChildValues[i]);
 
 		//put right 2 values in new node
 		long[] rightChildValues = new long[14];
 		for (int i = 0; i < 14; i++) {
 
 			if (i == 2) { //if at 3rd key
-				rightChildValues[i] = tempBTreeValues[i+6]; //set key
+				rightChildValues[i] = tempBTreeValues[i + 6]; //set key
 				rightChildValues[i + 1] = tempBTreeValues[i + 7]; //set value index
 
 			} else if (i == 5) { //if at 4th key
 				rightChildValues[i] = lastKey; //set key
 				rightChildValues[i + 1] = lastValueIndex; //set value index
 
-			} else if (i != 3 || i != 6)  //if value is not pointing to last 2 value indexes
+			} else if (i == 3 || i == 6)
+				continue;
+			else
 				rightChildValues[i] = -1;
+
 		}
 
 		//put middle value into root node
@@ -254,9 +262,10 @@ public class BTreeManager {
 		}
 
 
-	 	overwriteNode(0, leftChildValues); //node 0 gets left children
+	 	
 		writeNewNode(rightChildValues); //node 1 gets right children
 	    writeNewNode(root); //node 2 gets middle value
+	    overwriteNode(0, leftChildValues); //node 0 gets left children
 	}
 
 //-------------------------------------------------------------------------------------
