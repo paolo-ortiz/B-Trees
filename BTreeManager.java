@@ -149,8 +149,16 @@ public class BTreeManager {
 
 			//if node is full, save last values
 			if (currentNode.isFull()) {
-				lastKey = currentNode.getLastKey();
-				lastValueIndex = currentNode.getLastValueIndex();
+
+				//if key is greater than all values in node
+				if (currentNode.keyIsGreatestValue(key)) {
+					lastKey = key;
+					lastValueIndex = index;
+				} else {
+
+					lastKey = currentNode.getLastKey();
+					lastValueIndex = currentNode.getLastValueIndex();
+				}
 				insertedWhenFull = true;
 			}
 
@@ -159,9 +167,6 @@ public class BTreeManager {
 
 			//get node array
 			long[] temp = currentNode.getArray();
-
-
-			
 	
 			valueIndex++; //increment valueIndex
 
@@ -169,11 +174,13 @@ public class BTreeManager {
 				splitRootNode(currentNode, lastKey, lastValueIndex);
 			else {
 
-				//write array to file
-				for (int j = 0; j < temp.length; j++) {
-					file.seek(8 * (j + 2));
-					file.writeLong(temp[j]);
-				}
+				// //write array to file
+				// for (int j = 0; j < temp.length; j++) {
+				// 	file.seek(8 * (j + 2));
+				// 	file.writeLong(temp[j]);
+				// }
+				seekLocation = 16 + i * 112;
+				//writeArrayToBTree(seekLocation, temp);
 			}
 
 			
@@ -203,10 +210,11 @@ public class BTreeManager {
 
 	public static void splitRootNode(BTreeNode node, long lastKey, long lastValueIndex) throws IOException {
 
-		System.out.println("SPLIT");
-
 		//get node values
 		long[] tempBTreeValues = node.getArray();
+
+		System.out.printf("LAST KEY: %d\nLAST VALUE INDEX: %d\n", lastKey, lastValueIndex);
+
 
 		//put left 2 values in a new node
 		long[] leftChildValues = new long[14];
@@ -227,16 +235,13 @@ public class BTreeManager {
 			
 		}
 		
-		for (int i = 0; i < 14; i++)
-			System.out.println(leftChildValues[i]);
-
 		//put right 2 values in new node
 		long[] rightChildValues = new long[14];
 		for (int i = 0; i < 14; i++) {
 
 			if (i == 2) { //if at 3rd key
-				rightChildValues[i] = tempBTreeValues[i + 6]; //set key
-				rightChildValues[i + 1] = tempBTreeValues[i + 7]; //set value index
+				rightChildValues[i] = tempBTreeValues[11]; //set key
+				rightChildValues[i + 1] = tempBTreeValues[12]; //set value index
 
 			} else if (i == 5) { //if at 4th key
 				rightChildValues[i] = lastKey; //set key
@@ -261,11 +266,14 @@ public class BTreeManager {
 				root[i] = -1;
 		}
 
-
-	 	
-		writeNewNode(rightChildValues); //node 1 gets right children
+	 	// for (int i =0; i < 14; i++){
+	  //   	System.out.println(rightChildValues[i]);
+	  //   }
+		
+	    overwriteNode(0, leftChildValues); //node 0 gets left children //overwriting everything
+	    writeNewNode(rightChildValues); //node 1 gets right children
 	    writeNewNode(root); //node 2 gets middle value
-	    overwriteNode(0, leftChildValues); //node 0 gets left children
+	    
 	}
 
 //-------------------------------------------------------------------------------------
@@ -273,7 +281,7 @@ public class BTreeManager {
 	//writes new node array to data.bt
 	//used when current node is full
 	//requires long[], which will be written
-	public static void writeNewNode(long[] BTreeValues) throws IOException {
+	public static void writeNewNode(long[] BTreeValues) throws IOException { 		
 
 		//goes to last place in data.bt
 		seekLocation = 16 + numNodes * 112; 
@@ -281,12 +289,12 @@ public class BTreeManager {
 		//write values
 		writeArrayToBTree(seekLocation, BTreeValues);
 
-		//update number of nodes
-		incrementNodes();
-
 		//add new node to array list
 		BTreeNode tempNode = new BTreeNode(BTreeValues);
 		arrListOfBTreeNodes.add(tempNode);
+
+		//update number of nodes
+		incrementNodes();
 	}
 
 //-------------------------------------------------------------------------------------
@@ -295,8 +303,6 @@ public class BTreeManager {
 	//requires nodeIndex of node to be rewritten
 	//requires array of values to overwrite node
 	public static void overwriteNode(int nodeIndex, long[] newNodeValues) throws IOException {
-
-		System.out.println("OVERWRITTING");
 
 		BTreeNode newNode = new BTreeNode(newNodeValues); //create new node
 		arrListOfBTreeNodes.set(nodeIndex, newNode); //replace node in arraylist
@@ -310,6 +316,7 @@ public class BTreeManager {
 //-------------------------------------------------------------------------------------
 
 	public static void writeArrayToBTree(long seekLocation, long[] nodeValues) throws IOException {
+		
 
 		//write all longs to data.bt
 		for (int i = 0; i < nodeValues.length; i++){

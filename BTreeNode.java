@@ -85,6 +85,20 @@ public class BTreeNode {
 
 //-------------------------------------------------------------------------------------
 
+	//returns true if key is greater than all values in node
+	public static boolean keyIsGreatestValue(long key) {
+
+		//go through all keys
+		for (int i = 2; i < 13; i += 3) {
+			if (key < i)
+				return false; //return false if key is less than one value
+		}
+
+		return true;
+	}
+
+//-------------------------------------------------------------------------------------
+
 	//checks if key exists in node array
 	//requires key to be checked
 	public static boolean keyExists (long key) {
