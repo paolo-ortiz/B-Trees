@@ -1,0 +1,6 @@
+insert 8 Hello
+insert 11 Hi
+insert 6 What's up?
+insert 14 Not down
+insert 15 Split!
+exit

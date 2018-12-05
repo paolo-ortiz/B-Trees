@@ -35,30 +35,37 @@ public class BTreeDB {
 				if (command.equals("insert")) {
 
 					long key = rd.nextLong();
-					String value = rd.nextLine().trim();
+					String value;
+
+					//check if there is any more input
+					if (rd.hasNextLine())
+						value = rd.nextLine().trim();
+					//if no input is found, then blank is added
+					else
+						value = "";
 
 					//check if key already exists
 					boolean exists = btm.isPresent(key);
+
 					//if it does not exist, then insert
 					if (exists == false) {
+						int tempIndex = vm.getNumRecords();
+
 						insertToVal(value, vm);
-						insertToBT(key,index, btm);
+						insertToBT(key, tempIndex, btm);
 						System.out.printf("%d inserted\n", key);
-					} else 
+					}
+					//else if key already exists 
+					else 
 						System.out.printf("ERROR: %d already exists\n", key);	
-
-					
-
 				}
-
-				else if(command.equals("select")) {
+				else if (command.equals("select")) {
 
 					long key = rd.nextLong(); //gets key from command
 
 					int valueIndex = btm.getValueIndex(key); //get value index
 
 					select(key, valueIndex, vm);
-
 				}
 
 				//else if invalid command, print "invalid command"
@@ -71,15 +78,24 @@ public class BTreeDB {
 		}
 	}	
 
+//-------------------------------------------------------------------------------------
+
 	//inserts value into data.val
 	public static void insertToVal(String word, ValuesManager vm) throws IOException {
 		vm.insert(word);
 	}
 
+//-------------------------------------------------------------------------------------
+
 	//inserts value into data.bt
 	public static void insertToBT(long key, int index, BTreeManager btm) throws IOException {
-		btm.insertToNode(key,index);
+		//get root node index
+		long rni = btm.getRootNodeIndex();
+
+		btm.insertToNode(key,index, rni);
 	}
+
+//-------------------------------------------------------------------------------------
 
 	public static void select(long key, int valueIndex, ValuesManager vm) throws IOException {
 
